@@ -13,6 +13,13 @@ import { LockerRoom3D } from './LockerRoom3D';
 import { TacticalBoard3D } from './TacticalBoard3D';
 import { Jumbotron3D } from './Jumbotron3D';
 import { ExitTunnel3D, SecretTunnel3D } from './ExitTunnel3D';
+import { StadiumRoofAndSky } from './StadiumRoofAndSky';
+import { InteractiveTechOrbs } from './InteractiveTechOrbs';
+import { ControlRoom3D } from './ControlRoom3D';
+import { InteractiveGlobe3D } from './InteractiveGlobe3D';
+import { PitchInteractiveZones } from './PitchInteractiveZones';
+import { FloatingCodeRain } from './FloatingCodeRain';
+import { BallTrailSystem } from './BallTrailSystem';
 import * as THREE from 'three';
 
 interface StadiumCanvasProps {
@@ -30,33 +37,61 @@ interface StadiumCanvasProps {
 }
 
 export function StadiumCanvas({ controlsRef }: StadiumCanvasProps) {
+  const { timeOfDay, weather, isMatchDay } = usePortfolio();
+
+  const isNight = timeOfDay === 'night';
+  const bgColor = isNight ? '#050505' : '#87CEEB';
+  const fogColor = isNight ? (weather === 'mist' ? '#111827' : '#050505') : '#BAE6FD';
+  const fogNear = weather === 'mist' ? 30 : 70;
+  const fogFar = weather === 'mist' ? 180 : 320;
+
   return (
     <div className="absolute inset-0 w-full h-full bg-[#050505] select-none">
       <Canvas
-        shadows
-        camera={{ position: [0, 22, 38], fov: 48, near: 0.1, far: 400 }}
-        gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
+        shadows={{ type: THREE.PCFShadowMap }}
+        dpr={[1, 1.5]}
+        camera={{ position: [0, 22, 38], fov: 48, near: 0.1, far: 450 }}
+        gl={{
+          antialias: true,
+          alpha: false,
+          powerPreference: 'high-performance',
+          stencil: false,
+          depth: true,
+        }}
       >
-        <color attach="background" args={['#050505']} />
-        <fog attach="fog" args={['#050505', 70, 300]} />
+        <color attach="background" args={[bgColor]} />
+        <fog attach="fog" args={[fogColor, fogNear, fogFar]} />
 
-        {/* Dynamic Madrid Night Stadium Lighting */}
-        <ambientLight intensity={0.7} color="#FFFFFF" />
-        <hemisphereLight args={['#FFFFFF', '#050505', 0.6]} />
+        {/* Global Stadium Lighting */}
+        <ambientLight intensity={isNight ? (isMatchDay ? 0.9 : 0.6) : 1.3} color={isNight ? '#FFFFFF' : '#FFFBEB'} />
+        <hemisphereLight
+          args={[
+            isNight ? '#FFFFFF' : '#E0F2FE',
+            isNight ? '#050505' : '#166534',
+            isNight ? 0.6 : 0.9
+          ]}
+        />
         <directionalLight
-          position={[0, 45, 0]}
-          intensity={1.1}
-          color="#FFFFFF"
+          position={isNight ? [0, 45, 0] : [30, 60, 20]}
+          intensity={isNight ? (isMatchDay ? 1.6 : 1.1) : 2.2}
+          color={isNight ? '#FFFFFF' : '#FEF3C7'}
           castShadow
+          shadow-bias={-0.0005}
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
         />
 
         <Suspense fallback={null}>
           <CameraController />
+          <StadiumRoofAndSky />
           <StadiumPitch />
           <Floodlights />
           <StadiumStands />
+          <PitchInteractiveZones />
+          <InteractiveTechOrbs />
+          <ControlRoom3D />
+          <InteractiveGlobe3D />
+          <FloatingCodeRain />
           <GoalsAndHitboxes />
           <TrophyRoom3D />
           <LockerRoom3D />
@@ -64,6 +99,7 @@ export function StadiumCanvas({ controlsRef }: StadiumCanvasProps) {
           <Jumbotron3D />
           <ExitTunnel3D />
           <SecretTunnel3D />
+          <BallTrailSystem />
           <InteractiveBall controlsRef={controlsRef} />
         </Suspense>
       </Canvas>
@@ -73,7 +109,7 @@ export function StadiumCanvas({ controlsRef }: StadiumCanvasProps) {
 
 function CameraController() {
   const { camera } = useThree();
-  const { cameraZone, ballPosition, hasEnteredStadium } = usePortfolio();
+  const { cameraZone, ballPosition, hasEnteredStadium, cameraShake } = usePortfolio();
   const currentLookAt = useRef(new THREE.Vector3(0, 0, 0));
 
   useFrame((_, delta) => {
@@ -118,6 +154,24 @@ function CameraController() {
           targetLookAt.set(22, 3.2, -28);
           break;
         }
+        case 'controlroom': {
+          // Developer Control Room view
+          targetPos.set(-14, 6.0, 20);
+          targetLookAt.set(-22, 3.2, 28);
+          break;
+        }
+        case 'roof': {
+          // Look up at Stadium Roof and Night Sky
+          targetPos.set(0, 4, 10);
+          targetLookAt.set(0, 32, 0);
+          break;
+        }
+        case 'techOrbs': {
+          // 3D Technology Orbs view
+          targetPos.set(0, 7.0, -8);
+          targetLookAt.set(0, 2.5, -16);
+          break;
+        }
         case 'scoreboard': {
           // Look up at Jumbotron
           targetPos.set(0, 6, 12);
@@ -131,6 +185,13 @@ function CameraController() {
           break;
         }
       }
+    }
+
+    // Apply camera shake if triggered
+    if (cameraShake > 0) {
+      targetPos.x += (Math.random() - 0.5) * cameraShake * 0.8;
+      targetPos.y += (Math.random() - 0.5) * cameraShake * 0.8;
+      targetPos.z += (Math.random() - 0.5) * cameraShake * 0.8;
     }
 
     // Smooth camera lerp

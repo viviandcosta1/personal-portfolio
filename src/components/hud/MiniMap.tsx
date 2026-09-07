@@ -2,7 +2,7 @@
 
 import React from 'react';
 import { usePortfolio, CameraZone } from '@/context/PortfolioContext';
-import { X, Navigation, Crosshair } from 'lucide-react';
+import { X, Crosshair } from 'lucide-react';
 
 export function MiniMap() {
   const { isMiniMapOpen, toggleMiniMap, ballPosition, focusZone } = usePortfolio();
@@ -21,9 +21,11 @@ export function MiniMap() {
 
   const pointsOfInterest: { id: CameraZone; name: string; x: number; y: number; color: string }[] = [
     { id: 'goals', name: 'PROJECTS', x: mapW / 2, y: 25, color: '#D4AF37' },
-    { id: 'tactical', name: 'TACTICS', x: mapW - 35, y: 55, color: '#FFFFFF' },
+    { id: 'tactical', name: 'FORMATION', x: mapW - 35, y: 55, color: '#FFFFFF' },
     { id: 'trophies', name: 'TROPHIES', x: mapW - 25, y: mapH / 2, color: '#F5C542' },
     { id: 'lockers', name: 'LOCKERS', x: 25, y: mapH / 2, color: '#FFFFFF' },
+    { id: 'controlroom', name: 'CONTROL ROOM', x: 35, y: mapH - 55, color: '#38BDF8' },
+    { id: 'techOrbs', name: 'TECH ORBS', x: mapW / 2, y: 75, color: '#4ADE80' },
     { id: 'pitch', name: 'CENTER', x: mapW / 2, y: mapH / 2, color: '#FFFFFF' },
     { id: 'tunnel', name: 'EXIT TUNNEL', x: mapW / 2, y: mapH - 25, color: '#D4AF37' },
   ];

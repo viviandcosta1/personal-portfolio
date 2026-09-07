@@ -14,6 +14,9 @@ import { TrainingModeHUD } from '@/components/hud/TrainingModeHUD';
 import { GoalUnlockedBanner } from '@/components/hud/GoalUnlockedBanner';
 import { OutroCinematic } from '@/components/hud/OutroCinematic';
 import { TerminalModal } from '@/components/hud/TerminalModal';
+import { CustomCursor } from '@/components/hud/CustomCursor';
+import { SectionChapterCard } from '@/components/hud/SectionChapterCard';
+import { AtmosphereControls } from '@/components/hud/AtmosphereControls';
 import { ProjectShootoutGame } from '@/components/game/ProjectShootoutGame';
 import { PlayerProfileModal } from '@/components/modals/PlayerProfileModal';
 import { ProjectModal } from '@/components/modals/ProjectModal';
@@ -35,14 +38,23 @@ function StadiumExperience() {
 
   return (
     <main className="relative w-screen h-screen overflow-hidden bg-[#050505] select-none touch-none">
+      {/* Dynamic Custom Cursor */}
+      <CustomCursor />
+
       {/* 3D Physics Stadium Canvas */}
       <StadiumCanvas controlsRef={controlsRef} />
+
+      {/* Sports Documentary Section Chapter Titles */}
+      <SectionChapterCard />
 
       {/* Opening Cinematic Football Tunnel Hero Overlay */}
       <HeroOverlay />
 
       {/* Broadcast HUD */}
       <TacticalHUD />
+
+      {/* Quick Atmosphere Toggles (Day/Night, Weather, Match Day) */}
+      <AtmosphereControls />
 
       {/* Goal Scoring Banner */}
       <GoalUnlockedBanner />

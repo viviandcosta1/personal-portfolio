@@ -16,7 +16,10 @@ import {
   Layers,
   Cpu,
   Sparkles,
-  Compass
+  Compass,
+  Monitor,
+  Eye,
+  Orbit,
 } from 'lucide-react';
 
 export function TacticalHUD() {
@@ -37,6 +40,7 @@ export function TacticalHUD() {
     toggleTrainingMode,
     startOutroCinematic,
     triggerMentalityMode,
+    setCursorState,
   } = usePortfolio();
 
   if (!hasEnteredStadium) return null;
@@ -64,6 +68,8 @@ export function TacticalHUD() {
         <div className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-[#0D0D0D]/95 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-[#262626] shadow-2xl">
           <button
             onClick={() => openModal('profile')}
+            onMouseEnter={() => setCursorState('hover')}
+            onMouseLeave={() => setCursorState('default')}
             className="flex items-center gap-2.5 group cursor-pointer"
           >
             <div className="w-8 h-8 rounded-xl bg-white p-0.5 flex items-center justify-center font-black text-[#050505] text-xs font-mono group-hover:scale-105 transition-transform">
@@ -120,6 +126,24 @@ export function TacticalHUD() {
             onClick={handleTacticsClick}
             icon={<Cpu className="w-3.5 h-3.5" />}
             label="FORMATION"
+          />
+          <NavButton
+            active={cameraZone === 'controlroom'}
+            onClick={() => focusZone('controlroom')}
+            icon={<Monitor className="w-3.5 h-3.5" />}
+            label="CONTROL"
+          />
+          <NavButton
+            active={cameraZone === 'techOrbs'}
+            onClick={() => focusZone('techOrbs')}
+            icon={<Orbit className="w-3.5 h-3.5" />}
+            label="ORBS"
+          />
+          <NavButton
+            active={cameraZone === 'roof'}
+            onClick={() => focusZone('roof')}
+            icon={<Eye className="w-3.5 h-3.5" />}
+            label="ROOF"
           />
         </nav>
 
@@ -192,7 +216,7 @@ export function TacticalHUD() {
           <button
             onClick={toggleTerminal}
             className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-white hover:border-white hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
-            title="Terminal Console"
+            title="Terminal Console (~)"
           >
             <Terminal className="w-4 h-4 text-[#D4AF37]" />
           </button>
@@ -206,7 +230,7 @@ export function TacticalHUD() {
             <MapIcon className="w-4 h-4 text-white" />
           </button>
 
-          {/* Sound Toggle (Clearly indicates Sound ON / Sound OFF) */}
+          {/* Sound Toggle */}
           <button
             onClick={toggleSound}
             className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-slate-300 hover:border-slate-500 hover:bg-[#171717] transition-all cursor-pointer shadow-xl flex items-center gap-1.5"
@@ -234,6 +258,7 @@ export function TacticalHUD() {
         <NavButton active={cameraZone === 'trophies'} onClick={handleExperienceClick} label="TROPHIES" />
         <NavButton active={cameraZone === 'lockers'} onClick={handleSkillsClick} label="LOCKERS" />
         <NavButton active={cameraZone === 'tactical'} onClick={handleTacticsClick} label="TACTICS" />
+        <NavButton active={cameraZone === 'controlroom'} onClick={() => focusZone('controlroom')} label="CONTROL" />
         <NavButton active={false} onClick={() => openModal('profile')} label="CARD" />
       </div>
     </header>

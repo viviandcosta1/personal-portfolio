@@ -412,6 +412,90 @@ class SoundEngine {
       // Audio fallback
     }
   }
+  // Camera whoosh transition
+  public playWhoosh() {
+    if (this.getMuted()) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      const bufferSize = this.ctx.sampleRate * 0.35;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+
+      const filter = this.ctx.createBiquadFilter();
+      filter.type = 'bandpass';
+      filter.frequency.setValueAtTime(300, t);
+      filter.frequency.exponentialRampToValueAtTime(1200, t + 0.18);
+      filter.frequency.exponentialRampToValueAtTime(200, t + 0.35);
+
+      const gain = this.ctx.createGain();
+      gain.gain.setValueAtTime(0.2, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.35);
+
+      noise.connect(filter);
+      filter.connect(gain);
+      gain.connect(this.ctx.destination);
+      noise.start(t);
+    } catch {}
+  }
+
+  // Glitch transition noise
+  public playGlitch() {
+    if (this.getMuted()) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sawtooth';
+      osc.frequency.setValueAtTime(800, t);
+      osc.frequency.setValueAtTime(140, t + 0.04);
+      osc.frequency.setValueAtTime(1200, t + 0.08);
+      osc.frequency.setValueAtTime(300, t + 0.12);
+
+      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.exponentialRampToValueAtTime(0.001, t + 0.16);
+
+      osc.connect(gain);
+      gain.connect(this.ctx.destination);
+      osc.start(t);
+      osc.stop(t + 0.18);
+    } catch {}
+  }
+
+  // Match day arena ignition
+  public playMatchDayFanfare() {
+    if (this.getMuted()) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      const fanfare = [261.63, 329.63, 392.0, 523.25, 659.25, 783.99];
+      fanfare.forEach((f, i) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'sawtooth';
+        osc.frequency.setValueAtTime(f, t + i * 0.07);
+        gain.gain.setValueAtTime(0.18, t + i * 0.07);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.07 + 0.8);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(t + i * 0.07);
+        osc.stop(t + i * 0.07 + 0.85);
+      });
+    } catch {}
+  }
 }
 
 export const soundEngine = new SoundEngine();

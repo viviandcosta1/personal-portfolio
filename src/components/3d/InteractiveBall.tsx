@@ -23,7 +23,14 @@ interface InteractiveBallProps {
 export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
   const ballMeshRef = useRef<THREE.Mesh>(null);
   const shadowMeshRef = useRef<THREE.Mesh>(null);
-  const { setBallPosition, hasEnteredStadium, shootTargetPos, shootTimestamp } = usePortfolio();
+  const {
+    setBallPosition,
+    hasEnteredStadium,
+    shootTargetPos,
+    shootTimestamp,
+    triggerCameraShake,
+    isMentalityModeActive,
+  } = usePortfolio();
 
   // Physics state
   const pos = useRef(new THREE.Vector3(0, 0.45, 0));
@@ -31,6 +38,7 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
   const radius = 0.45;
   const kickCooldown = useRef(0);
   const lastShootTimestamp = useRef(0);
+  const lastStateUpdateTime = useRef(0);
 
   // Ball surface canvas texture (White leather + Gold & Charcoal geometric panels)
   const ballTexture = useMemo(() => {
@@ -137,12 +145,13 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
     kickCooldown.current -= dt;
     if (ctrl.kick && kickCooldown.current <= 0) {
       kickCooldown.current = 0.4;
-      const kickImpulse = ctrl.sprint ? 40 : 28;
+      const kickImpulse = ctrl.sprint ? 42 : 28;
       const kickDir = moveDir.lengthSq() > 0 ? moveDir.clone() : new THREE.Vector3(0, 0, -1);
       vel.current.x = kickDir.x * kickImpulse;
       vel.current.z = kickDir.z * kickImpulse;
       vel.current.y = 7.5;
       soundEngine.playKick(ctrl.sprint ? 1.4 : 1.0);
+      triggerCameraShake(ctrl.sprint ? 0.8 : 0.4);
     }
 
     // Gravity & Friction Physics integration
@@ -195,7 +204,12 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
       shadowMeshRef.current.scale.set(heightFactor, heightFactor, 1);
     }
 
-    setBallPosition([pos.current.x, pos.current.y, pos.current.z]);
+    // Throttle React state update to ~10Hz (every 100ms) to prevent 60Hz React tree re-renders!
+    const now = performance.now();
+    if (now - lastStateUpdateTime.current > 100) {
+      lastStateUpdateTime.current = now;
+      setBallPosition([pos.current.x, pos.current.y, pos.current.z]);
+    }
   });
 
   return (
@@ -211,9 +225,11 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
         <sphereGeometry args={[radius, 32, 32]} />
         <meshStandardMaterial
           map={ballTexture || undefined}
-          color={ballTexture ? '#FFFFFF' : '#FFFFFF'}
+          color="#FFFFFF"
           roughness={0.2}
           metalness={0.08}
+          emissive={isMentalityModeActive ? '#D4AF37' : '#000000'}
+          emissiveIntensity={isMentalityModeActive ? 0.6 : 0}
         />
 
         {/* Subtle Gold Outer Aura Ring */}

@@ -6,7 +6,9 @@ import { usePortfolio } from '@/context/PortfolioContext';
 import * as THREE from 'three';
 
 export function Floodlights() {
-  const { floodlightsActive } = usePortfolio();
+  const { floodlightsActive, timeOfDay, isMatchDay } = usePortfolio();
+
+  const isNight = timeOfDay === 'night';
 
   // Positions for the 4 corner towers
   const towerPositions: [number, number, number][] = [
@@ -19,13 +21,15 @@ export function Floodlights() {
   return (
     <group>
       {towerPositions.map((pos, idx) => {
-        const isActive = floodlightsActive[idx];
+        const isActive = isNight ? floodlightsActive[idx] : true;
         return (
           <FloodlightTower
             key={`tower-${idx}`}
             position={pos}
             index={idx}
             isActive={isActive}
+            isNight={isNight}
+            isMatchDay={isMatchDay}
           />
         );
       })}
@@ -37,10 +41,14 @@ function FloodlightTower({
   position,
   index,
   isActive,
+  isNight,
+  isMatchDay,
 }: {
   position: [number, number, number];
   index: number;
   isActive: boolean;
+  isNight: boolean;
+  isMatchDay: boolean;
 }) {
   const lightRef = useRef<THREE.SpotLight>(null);
   const glowMeshRef = useRef<THREE.Mesh>(null);
@@ -51,7 +59,7 @@ function FloodlightTower({
 
   useFrame((_, delta) => {
     if (lightRef.current) {
-      const targetIntensity = isActive ? 1000 : 0;
+      const targetIntensity = isActive ? (isMatchDay ? 1600 : isNight ? 1000 : 400) : 0;
       lightRef.current.intensity = THREE.MathUtils.damp(
         lightRef.current.intensity,
         targetIntensity,
@@ -100,14 +108,14 @@ function FloodlightTower({
             >
               <circleGeometry args={[0.6, 16]} />
               <meshBasicMaterial
-                color={isActive ? '#FFFFFF' : '#171717'}
+                color={isActive ? (isMatchDay ? '#F5C542' : '#FFFFFF') : '#171717'}
               />
             </mesh>
           ))
         )}
 
         {/* Active Volumetric Glow Beam */}
-        {isActive && (
+        {isActive && isNight && (
           <mesh
             ref={glowMeshRef}
             position={[0, -6, (position[2] > 0 ? -8 : 8)]}
@@ -115,9 +123,9 @@ function FloodlightTower({
           >
             <coneGeometry args={[6, 16, 16, 1, true]} />
             <meshBasicMaterial
-              color="#FFFFFF"
+              color={isMatchDay ? '#F5C542' : '#FFFFFF'}
               transparent
-              opacity={0.07}
+              opacity={isMatchDay ? 0.12 : 0.07}
               side={THREE.DoubleSide}
               depthWrite={false}
             />
@@ -127,7 +135,7 @@ function FloodlightTower({
         {/* Spot Light source */}
         <spotLight
           ref={lightRef}
-          color="#FFFFFF"
+          color={isMatchDay ? '#FEF08A' : '#FFFFFF'}
           intensity={0}
           distance={130}
           angle={Math.PI / 4}

@@ -5,7 +5,7 @@ import { usePortfolio } from '@/context/PortfolioContext';
 import { VIVIAN_DATA } from '@/data/portfolioData';
 import { soundEngine } from '@/components/audio/SoundEngine';
 import confetti from 'canvas-confetti';
-import { Terminal as TermIcon, X } from 'lucide-react';
+import { X } from 'lucide-react';
 
 interface TerminalLine {
   type: 'input' | 'output' | 'error' | 'success' | 'system';
@@ -13,7 +13,17 @@ interface TerminalLine {
 }
 
 export function TerminalModal() {
-  const { isTerminalOpen, toggleTerminal, unlockAchievement, triggerMentalityMode } = usePortfolio();
+  const {
+    isTerminalOpen,
+    toggleTerminal,
+    unlockAchievement,
+    triggerMentalityMode,
+    focusZone,
+    openModal,
+    toggleMatchDay,
+    toggleTimeOfDay,
+  } = usePortfolio();
+
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<TerminalLine[]>([
     { type: 'system', text: '╔══════════════════════════════════════════════════════════════╗' },
@@ -55,13 +65,18 @@ export function TerminalModal() {
       newHistory.push(
         { type: 'output', text: 'AVAILABLE COMMANDS:' },
         { type: 'output', text: '  about                  - Vivian D\'costa player profile & scouting card' },
-        { type: 'output', text: '  lockers                - 10 Tech Stack Lockers (#07 to #16)' },
         { type: 'output', text: '  projects               - Production software & AI platforms' },
+        { type: 'output', text: '  lockers / skills       - 10 Tech Stack Lockers (#07 to #16)' },
         { type: 'output', text: '  formation              - Tactical 4-2-3-1 technology formation' },
-        { type: 'output', text: '  experience             - Championship career milestones' },
+        { type: 'output', text: '  experience / trophies  - Championship career milestones' },
+        { type: 'output', text: '  controlroom            - Enter developer analytics control room' },
+        { type: 'output', text: '  orbs                   - Inspect 3D technology orbs' },
+        { type: 'output', text: '  roof                   - Look up at stadium roof and night sky' },
+        { type: 'output', text: '  matchday               - Toggle Match Day arena mode' },
+        { type: 'output', text: '  daynight               - Toggle Day / Night stadium lighting' },
         { type: 'output', text: '  mentality / 7          - Trigger Number 7 Mentality Mode' },
         { type: 'output', text: '  contact                - Direct email, phone, and professional links' },
-        { type: 'output', text: '  sudo make portfolio-awesome - Launch stadium celebration' },
+        { type: 'output', text: '  sudo unlock            - Launch stadium celebration' },
         { type: 'output', text: '  clear                  - Clear terminal screen' },
         { type: 'output', text: '  exit                   - Close terminal console' }
       );
@@ -69,7 +84,25 @@ export function TerminalModal() {
       toggleTerminal();
       triggerMentalityMode();
       return;
-    } else if (lower === 'sudo make portfolio-awesome' || lower === 'sudo make portfolio-awesome;') {
+    } else if (lower === 'matchday') {
+      toggleMatchDay();
+      newHistory.push({ type: 'success', text: '>>> MATCH DAY ARENA ATMOSPHERE TOGGLED ⚽' });
+    } else if (lower === 'daynight') {
+      toggleTimeOfDay();
+      newHistory.push({ type: 'success', text: '>>> STADIUM LIGHTING TOGGLED ☀️🌙' });
+    } else if (lower === 'controlroom') {
+      toggleTerminal();
+      focusZone('controlroom');
+      return;
+    } else if (lower === 'orbs') {
+      toggleTerminal();
+      focusZone('techOrbs');
+      return;
+    } else if (lower === 'roof') {
+      toggleTerminal();
+      focusZone('roof');
+      return;
+    } else if (lower === 'sudo unlock' || lower === 'sudo make portfolio-awesome') {
       soundEngine.playGoal();
       unlockAchievement('explorer');
       try {
@@ -112,7 +145,7 @@ export function TerminalModal() {
           text: `  ⚽ ${p.title} (${p.category}) - ${p.description}`
         });
       });
-    } else if (lower === 'experience') {
+    } else if (lower === 'experience' || lower === 'trophies') {
       newHistory.push({ type: 'output', text: 'CAREER TIMELINE:' });
       VIVIAN_DATA.experiences.forEach(e => {
         newHistory.push({
@@ -120,6 +153,11 @@ export function TerminalModal() {
           text: `  🏆 ${e.company} - ${e.role} (${e.period}): ${e.summary}`
         });
       });
+    } else if (lower === 'formation' || lower === 'tactics') {
+      toggleTerminal();
+      focusZone('tactical');
+      openModal('tactical');
+      return;
     } else if (lower === 'contact') {
       newHistory.push(
         { type: 'output', text: `EMAIL:    ${VIVIAN_DATA.personal.email}` },

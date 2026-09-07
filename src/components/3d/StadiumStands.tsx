@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useMemo } from 'react';
+import { usePortfolio } from '@/context/PortfolioContext';
 import * as THREE from 'three';
 
 export function StadiumStands() {
@@ -44,9 +45,6 @@ export function StadiumStands() {
         tiers={6}
         title="SOUTH STAND • MADRID NIGHT DEVOPS"
       />
-
-      {/* Stadium Roof Trusses */}
-      <RoofTrusses />
     </group>
   );
 }
@@ -64,15 +62,20 @@ function GrandstandTier({
   tiers: number;
   title: string;
 }) {
-  // Generate spectator silhouettes on the tiers
-  const crowdDots = useMemo(() => {
-    const dots: { x: number; y: number; z: number; color: string }[] = [];
-    const colors = ['#FFFFFF', '#D4AF37', '#F5C542', '#A1A1AA', '#E4E4E7'];
+  const { timeOfDay, isMatchDay } = usePortfolio();
+  const isNight = timeOfDay === 'night';
+
+  // Generate spectator points for high-performance single-draw rendering
+  const { crowdPositions, crowdColors } = useMemo(() => {
+    const dots: { x: number; y: number; z: number; color: THREE.Color }[] = [];
+    const colors = isNight
+      ? ['#FFFFFF', '#D4AF37', '#F5C542', '#A1A1AA', '#E4E4E7'].map(c => new THREE.Color(c))
+      : ['#FFFFFF', '#38BDF8', '#D4AF37', '#64748B', '#0F172A'].map(c => new THREE.Color(c));
 
     for (let t = 1; t <= tiers; t++) {
-      const numPeople = Math.floor(length * 1.5);
+      const numPeople = Math.floor(length * 1.2);
       for (let p = 0; p < numPeople; p++) {
-        if (Math.random() > 0.4) {
+        if (Math.random() > 0.45) {
           const x = (p / numPeople) * length - length / 2 + (Math.random() - 0.5) * 0.4;
           const y = t * 1.1 + 0.35;
           const z = t * 1.5;
@@ -81,8 +84,20 @@ function GrandstandTier({
         }
       }
     }
-    return dots;
-  }, [length, tiers]);
+
+    const pos = new Float32Array(dots.length * 3);
+    const col = new Float32Array(dots.length * 3);
+    for (let i = 0; i < dots.length; i++) {
+      pos[i * 3] = dots[i].x;
+      pos[i * 3 + 1] = dots[i].y;
+      pos[i * 3 + 2] = dots[i].z;
+      col[i * 3] = dots[i].color.r;
+      col[i * 3 + 1] = dots[i].color.g;
+      col[i * 3 + 2] = dots[i].color.b;
+    }
+
+    return { crowdPositions: pos, crowdColors: col };
+  }, [length, tiers, isNight]);
 
   return (
     <group position={position} rotation={rotation}>
@@ -90,45 +105,40 @@ function GrandstandTier({
       {Array.from({ length: tiers }).map((_, i) => (
         <mesh key={`tier-step-${i}`} position={[0, (i + 1) * 0.55, (i + 1) * 1.5]} receiveShadow>
           <boxGeometry args={[length, 1.1, 1.5]} />
-          <meshStandardMaterial color="#0D0D0D" roughness={0.8} metalness={0.2} />
+          <meshStandardMaterial
+            color={isNight ? '#0D0D0D' : '#334155'}
+            roughness={0.8}
+            metalness={0.2}
+          />
         </mesh>
       ))}
 
       {/* Stand Structural Back Wall */}
       <mesh position={[0, (tiers * 1.1) / 2 + 2, tiers * 1.5 + 0.8]}>
         <boxGeometry args={[length, tiers * 1.1 + 4, 1.2]} />
-        <meshStandardMaterial color="#050505" roughness={0.9} />
+        <meshStandardMaterial color={isNight ? '#050505' : '#1E293B'} roughness={0.9} />
       </mesh>
 
       {/* Stand Banner */}
       <mesh position={[0, tiers * 1.1 + 3.5, tiers * 1.5 + 0.1]}>
         <boxGeometry args={[length * 0.7, 1.2, 0.2]} />
-        <meshBasicMaterial color="#FFFFFF" />
+        <meshBasicMaterial color={isMatchDay ? '#F5C542' : '#FFFFFF'} />
       </mesh>
 
-      {/* Crowd Silhouettes */}
-      {crowdDots.slice(0, 120).map((dot, idx) => (
-        <mesh key={`crowd-${idx}`} position={[dot.x, dot.y, dot.z]}>
-          <boxGeometry args={[0.3, 0.45, 0.2]} />
-          <meshBasicMaterial color={dot.color} />
-        </mesh>
-      ))}
-    </group>
-  );
-}
-
-function RoofTrusses() {
-  return (
-    <group position={[0, 24, 0]}>
-      {/* Outer Stadium Glow Ring in Pure White & Gold */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[44, 46, 32]} />
-        <meshBasicMaterial color="#FFFFFF" side={THREE.DoubleSide} transparent opacity={0.2} />
-      </mesh>
-      <mesh rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[47, 48, 32]} />
-        <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} transparent opacity={0.15} />
-      </mesh>
+      {/* High-Performance Instanced Crowd Points */}
+      <points>
+        <bufferGeometry>
+          <bufferAttribute
+            attach="attributes-position"
+            args={[crowdPositions, 3]}
+          />
+          <bufferAttribute
+            attach="attributes-color"
+            args={[crowdColors, 3]}
+          />
+        </bufferGeometry>
+        <pointsMaterial size={0.7} vertexColors />
+      </points>
     </group>
   );
 }

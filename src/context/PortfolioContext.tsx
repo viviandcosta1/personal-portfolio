@@ -1,6 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback, useRef } from 'react';
 import { Project, Experience, SkillCategory, LockerItem, VIVIAN_DATA } from '@/data/portfolioData';
 import { ACHIEVEMENTS, Achievement } from '@/data/achievementsData';
 import { soundEngine } from '@/components/audio/SoundEngine';
@@ -16,13 +16,37 @@ export type ModalType =
   | 'resume' 
   | 'contact' 
   | 'achievements'
-  | 'terminal';
+  | 'terminal'
+  | 'controlroom';
 
-export type CameraZone = 'entrance' | 'pitch' | 'goals' | 'trophies' | 'lockers' | 'tactical' | 'scoreboard' | 'tunnel';
+export type CameraZone = 
+  | 'entrance' 
+  | 'pitch' 
+  | 'goals' 
+  | 'trophies' 
+  | 'lockers' 
+  | 'tactical' 
+  | 'scoreboard' 
+  | 'tunnel' 
+  | 'roof' 
+  | 'controlroom' 
+  | 'techOrbs';
+
+export type TimeOfDay = 'night' | 'day';
+export type WeatherType = 'clear' | 'mist' | 'rain';
+export type CursorState = 'default' | 'hover' | 'kick' | 'project' | 'discover' | 'enter';
+
+export interface ChapterCardData {
+  number: string;
+  title: string;
+  subtitle: string;
+}
 
 interface PortfolioContextType {
-  // Hero & Floodlights
+  // Hero, Boot & Floodlights
   hasEnteredStadium: boolean;
+  isLoaded: boolean;
+  setIsLoaded: (loaded: boolean) => void;
   floodlightsActive: boolean[];
   enterStadium: () => void;
   resetToEntrance: () => void;
@@ -52,10 +76,27 @@ interface PortfolioContextType {
   cameraZone: CameraZone;
   setCameraZone: (zone: CameraZone) => void;
   focusZone: (zone: CameraZone) => void;
+  cameraShake: number;
+  triggerCameraShake: (intensity?: number) => void;
+
+  // Environmental Controls: Day/Night, Weather, Match Day
+  timeOfDay: TimeOfDay;
+  toggleTimeOfDay: () => void;
+  weather: WeatherType;
+  setWeather: (w: WeatherType) => void;
+  isMatchDay: boolean;
+  toggleMatchDay: () => void;
+
+  // Documentary Chapter Transition Overlay
+  activeChapter: ChapterCardData | null;
+  triggerChapter: (number: string, title: string, subtitle: string) => void;
+  dismissChapter: () => void;
 
   // Ball & Player Telemetry
   ballPosition: [number, number, number];
   setBallPosition: (pos: [number, number, number]) => void;
+  ballVelocity: [number, number, number];
+  setBallVelocity: (vel: [number, number, number]) => void;
   goalsScored: number;
   triggerGoal: (points?: number) => void;
   goalNotification: string | null;
@@ -86,6 +127,14 @@ interface PortfolioContextType {
   unlockAchievement: (id: string) => void;
   dismissAchievement: () => void;
 
+  // Custom Cursor
+  cursorState: CursorState;
+  setCursorState: (state: CursorState) => void;
+
+  // Glitch Effect
+  isGlitchActive: boolean;
+  triggerGlitch: () => void;
+
   // Audio
   isMuted: boolean;
   toggleSound: () => void;
@@ -101,6 +150,7 @@ const PortfolioContext = createContext<PortfolioContextType | null>(null);
 
 export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [hasEnteredStadium, setHasEnteredStadium] = useState(false);
+  const [isLoaded, setIsLoaded] = useState(false);
   const [floodlightsActive, setFloodlightsActive] = useState<boolean[]>([false, false, false, false]);
   const [activeModal, setActiveModal] = useState<ModalType>('none');
   const [cameraZone, setCameraZone] = useState<CameraZone>('entrance');
@@ -110,7 +160,19 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [selectedLocker, setSelectedLocker] = useState<SkillCategory | null>(VIVIAN_DATA.lockers[0]);
   const [selectedTechLocker, setSelectedTechLocker] = useState<LockerItem | null>(VIVIAN_DATA.techLockers[0]);
 
+  // Environment States
+  const [timeOfDay, setTimeOfDay] = useState<TimeOfDay>('night');
+  const [weather, setWeather] = useState<WeatherType>('clear');
+  const [isMatchDay, setIsMatchDay] = useState(false);
+
+  // Camera Shake & Chapter Titles
+  const [cameraShake, setCameraShake] = useState(0);
+  const [activeChapter, setActiveChapter] = useState<ChapterCardData | null>(null);
+  const chapterTimer = useRef<number | null>(null);
+
+  // Ball & Player Telemetry
   const [ballPosition, setBallPosition] = useState<[number, number, number]>([0, 0.45, 0]);
+  const [ballVelocity, setBallVelocity] = useState<[number, number, number]>([0, 0, 0]);
   const [goalsScored, setGoalsScored] = useState(0);
   const [goalNotification, setGoalNotification] = useState<string | null>(null);
 
@@ -126,9 +188,15 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [isTrainingModeActive, setIsTrainingModeActive] = useState(false);
   const [isOutroCinematicActive, setIsOutroCinematicActive] = useState(false);
 
+  // Cursor & Glitch
+  const [cursorState, setCursorState] = useState<CursorState>('default');
+  const [isGlitchActive, setIsGlitchActive] = useState(false);
+
+  // Achievements
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [recentAchievement, setRecentAchievement] = useState<Achievement | null>(null);
 
+  // Audio & HUD toggles
   const [isMuted, setIsMuted] = useState(true);
   const [isMiniMapOpen, setIsMiniMapOpen] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
@@ -159,6 +227,62 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     }
   };
 
+  const triggerGlitch = useCallback(() => {
+    setIsGlitchActive(true);
+    soundEngine.playGlitch();
+    setTimeout(() => {
+      setIsGlitchActive(false);
+    }, 380);
+  }, []);
+
+  const triggerCameraShake = useCallback((intensity = 1.0) => {
+    setCameraShake(intensity);
+    setTimeout(() => {
+      setCameraShake(0);
+    }, 450);
+  }, []);
+
+  const triggerChapter = useCallback((number: string, title: string, subtitle: string) => {
+    if (chapterTimer.current) clearTimeout(chapterTimer.current);
+    setActiveChapter({ number, title, subtitle });
+    soundEngine.playWhoosh();
+    chapterTimer.current = window.setTimeout(() => {
+      setActiveChapter(null);
+    }, 2800);
+  }, []);
+
+  const dismissChapter = useCallback(() => {
+    if (chapterTimer.current) clearTimeout(chapterTimer.current);
+    setActiveChapter(null);
+  }, []);
+
+  const toggleTimeOfDay = useCallback(() => {
+    soundEngine.playUiClick();
+    setTimeOfDay(prev => (prev === 'night' ? 'day' : 'night'));
+    triggerGlitch();
+  }, [triggerGlitch]);
+
+  const toggleMatchDay = useCallback(() => {
+    setIsMatchDay(prev => {
+      const next = !prev;
+      if (next) {
+        soundEngine.playMatchDayFanfare();
+        triggerCameraShake(1.2);
+        try {
+          confetti({
+            particleCount: 140,
+            spread: 110,
+            origin: { y: 0.35 },
+            colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#050505']
+          });
+        } catch {}
+      } else {
+        soundEngine.playUiClick();
+      }
+      return next;
+    });
+  }, [triggerCameraShake]);
+
   const unlockAchievement = useCallback((id: string) => {
     setUnlockedAchievements(prevList => {
       if (prevList.includes(id)) return prevList;
@@ -176,8 +300,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       // Trigger gold & white celebration confetti
       try {
         confetti({
-          particleCount: 60,
-          spread: 70,
+          particleCount: 70,
+          spread: 80,
           origin: { y: 0.2, x: 0.5 },
           colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#171717']
         });
@@ -200,11 +324,12 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     if (isMentalityModeActive) return;
     setIsMentalityModeActive(true);
     soundEngine.playMentalityMode();
+    triggerCameraShake(1.5);
     unlockAchievement('mentality_07');
 
     try {
       confetti({
-        particleCount: 120,
+        particleCount: 140,
         spread: 100,
         origin: { y: 0.5 },
         colors: ['#D4AF37', '#F5C542', '#FFFFFF', '#050505']
@@ -214,7 +339,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setTimeout(() => {
       setIsMentalityModeActive(false);
     }, 4500);
-  }, [isMentalityModeActive, unlockAchievement]);
+  }, [isMentalityModeActive, unlockAchievement, triggerCameraShake]);
 
   // Global Keyboard '7' Easter Egg Listener
   useEffect(() => {
@@ -231,6 +356,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setHasEnteredStadium(true);
     soundEngine.stopHeartbeat();
     soundEngine.playFloodlight(0);
+    triggerChapter('01', 'KICK OFF', 'MADRID NIGHT DEVELOPER ARENA');
 
     // Turn on floodlights sequentially with dramatic stadium timing
     [0, 1, 2, 3].forEach(idx => {
@@ -262,6 +388,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setActiveModal(type);
     if (type === 'tactical') {
       unlockAchievement('tactical_genius');
+    } else if (type === 'controlroom') {
+      unlockAchievement('explorer');
     }
   };
 
@@ -292,7 +420,6 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
 
   const openTechLockerModal = (l: LockerItem) => {
     setSelectedTechLocker(l);
-    // Find matching category
     const cat = VIVIAN_DATA.lockers.find(c => c.lockerNumber === l.number) || VIVIAN_DATA.lockers[0];
     setSelectedLocker(cat);
     soundEngine.playLocker();
@@ -301,16 +428,43 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   };
 
   const focusZone = (zone: CameraZone) => {
-    soundEngine.playUiClick();
+    soundEngine.playWhoosh();
     setCameraZone(zone);
-    if (zone === 'trophies') {
-      unlockAchievement('trophy_hunter');
-    } else if (zone === 'goals') {
-      unlockAchievement('full_stack');
-    } else if (zone === 'lockers') {
-      unlockAchievement('code_builder');
-    } else if (zone === 'tunnel') {
-      unlockAchievement('explorer');
+
+    // Trigger sports documentary chapter titles
+    switch (zone) {
+      case 'pitch':
+        triggerChapter('01', 'THE PITCH', 'CENTRAL OPERATIONAL ZONE');
+        break;
+      case 'goals':
+        triggerChapter('02', 'THE WORK', 'PRODUCTION ARSENAL & TARGETS');
+        unlockAchievement('full_stack');
+        break;
+      case 'trophies':
+        triggerChapter('03', 'THE JOURNEY', 'CHAMPIONSHIP CAREER MILESTONES');
+        unlockAchievement('trophy_hunter');
+        break;
+      case 'lockers':
+        triggerChapter('04', 'THE ARSENAL', '10 TECH STACK LOCKERS');
+        unlockAchievement('code_builder');
+        break;
+      case 'tactical':
+        triggerChapter('05', 'FORMATION', '4-2-3-1 SYSTEM ARCHITECTURE');
+        break;
+      case 'controlroom':
+        triggerChapter('06', 'CONTROL ROOM', 'ANALYTICS & DEVOPS SUITE');
+        unlockAchievement('explorer');
+        break;
+      case 'roof':
+        triggerChapter('07', 'THE ROOF', 'STADIUM CANOPY & NIGHT SKY');
+        break;
+      case 'techOrbs':
+        triggerChapter('08', 'TECH ORBS', '3D ENGINE & CLOUD INFRASTRUCTURE');
+        break;
+      case 'tunnel':
+        triggerChapter('09', 'THE TUNNEL', 'GATEWAY & CONTACT NETWORK');
+        unlockAchievement('explorer');
+        break;
     }
   };
 
@@ -325,18 +479,19 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     });
     setShootStreak(prev => Math.min(prev + 1, 7));
     soundEngine.playGoal();
+    triggerCameraShake(1.6);
     unlockAchievement('on_target');
 
     // Trigger Gold Goal Notification
-    setGoalNotification("GOAL. PROJECT UNLOCKED.");
+    setGoalNotification("GOAL! PROJECT UNLOCKED.");
     setTimeout(() => {
       setGoalNotification(null);
     }, 3200);
 
     try {
       confetti({
-        particleCount: 100,
-        spread: 90,
+        particleCount: 120,
+        spread: 95,
         origin: { y: 0.4 },
         colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#050505']
       });
@@ -349,6 +504,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setShootTargetPos([target.x, target.y, target.z]);
     setShootTimestamp(Date.now());
     soundEngine.playKick(1.6);
+    triggerCameraShake(0.6);
 
     setTimeout(() => {
       triggerGoal(target.points);
@@ -387,6 +543,8 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     <PortfolioContext.Provider
       value={{
         hasEnteredStadium,
+        isLoaded,
+        setIsLoaded,
         floodlightsActive,
         enterStadium,
         resetToEntrance,
@@ -408,8 +566,21 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         cameraZone,
         setCameraZone,
         focusZone,
+        cameraShake,
+        triggerCameraShake,
+        timeOfDay,
+        toggleTimeOfDay,
+        weather,
+        setWeather,
+        isMatchDay,
+        toggleMatchDay,
+        activeChapter,
+        triggerChapter,
+        dismissChapter,
         ballPosition,
         setBallPosition,
+        ballVelocity,
+        setBallVelocity,
         goalsScored,
         triggerGoal,
         goalNotification,
@@ -431,6 +602,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         recentAchievement,
         unlockAchievement,
         dismissAchievement,
+        cursorState,
+        setCursorState,
+        isGlitchActive,
+        triggerGlitch,
         isMuted,
         toggleSound,
         isMiniMapOpen,

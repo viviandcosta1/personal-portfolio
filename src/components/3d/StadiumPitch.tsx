@@ -2,10 +2,14 @@
 
 import React, { useRef, useMemo } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { usePortfolio } from '@/context/PortfolioContext';
 import * as THREE from 'three';
 
 export function StadiumPitch() {
+  const { timeOfDay, isMatchDay } = usePortfolio();
   const tickerOffset = useRef(0);
+
+  const isNight = timeOfDay === 'night';
 
   // Pitch dimensions (scale: 1 unit ~ 2 meters)
   const pitchWidth = 52;
@@ -20,11 +24,13 @@ export function StadiumPitch() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    // Grass alternating stripes - Madrid night contrast
+    // Grass alternating stripes
     const numStripes = 18;
     const stripeHeight = canvas.height / numStripes;
     for (let i = 0; i < numStripes; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#0B2917' : '#081F12';
+      ctx.fillStyle = isNight
+        ? (i % 2 === 0 ? '#0B2917' : '#081F12')
+        : (i % 2 === 0 ? '#15803D' : '#166534');
       ctx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight);
     }
 
@@ -105,9 +111,9 @@ export function StadiumPitch() {
     texture.wrapS = THREE.ClampToEdgeWrapping;
     texture.wrapT = THREE.ClampToEdgeWrapping;
     return texture;
-  }, []);
+  }, [isNight]);
 
-  // LED Advertising Boards Canvas Texture with Mentality Quotes
+  // LED Advertising Boards Canvas Texture with Vivian's Developer Stack
   const ledTexture = useMemo(() => {
     if (typeof window === 'undefined') return null;
     const canvas = document.createElement('canvas');
@@ -121,11 +127,11 @@ export function StadiumPitch() {
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 30px monospace';
-    const text = '👑 VIVIAN D\'COSTA 👑 DISCIPLINE BUILDS CONSISTENCY 👑 WORK. IMPROVE. REPEAT 👑 THE NEXT LEVEL IS BUILT 👑 STAY HUNGRY 👑 PRECISION OVER EXCUSES 👑 PLAY TO WIN 👑 KEEP MOVING FORWARD 👑';
+    const text = '👑 VIVIAN D\'COSTA 👑 SOFTWARE DEVELOPER 👑 BUILD → SHIP → IMPROVE 👑 PYTHON • REACT • NODE • FASTAPI • MONGODB • AWS • DOCKER 👑 DISCIPLINE BUILDS CONSISTENCY 👑';
     ctx.fillText(text, 20, 75);
 
     // Gold borders on LED
-    ctx.strokeStyle = '#D4AF37';
+    ctx.strokeStyle = isMatchDay ? '#F5C542' : '#D4AF37';
     ctx.lineWidth = 4;
     ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
 
@@ -134,12 +140,12 @@ export function StadiumPitch() {
     texture.wrapT = THREE.RepeatWrapping;
     texture.repeat.set(4, 1);
     return texture;
-  }, []);
+  }, [isMatchDay]);
 
   // Animate LED ticker
   useFrame((_, delta) => {
     if (ledTexture) {
-      tickerOffset.current += delta * 0.12;
+      tickerOffset.current += delta * (isMatchDay ? 0.22 : 0.12);
       ledTexture.offset.x = tickerOffset.current;
     }
   });
@@ -160,7 +166,7 @@ export function StadiumPitch() {
       {/* Surrounding Track / Deep Charcoal border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
         <planeGeometry args={[pitchWidth + 16, pitchLength + 16]} />
-        <meshStandardMaterial color="#0D0D0D" roughness={0.9} metalness={0.2} />
+        <meshStandardMaterial color={isNight ? '#0D0D0D' : '#1F2937'} roughness={0.9} metalness={0.2} />
       </mesh>
 
       {/* Perimeter LED Advertising Boards */}
@@ -203,12 +209,10 @@ export function StadiumPitch() {
         [pitchWidth / 2 - 1, pitchLength / 2 - 1],
       ].map(([fx, fz], idx) => (
         <group key={`corner-flag-${idx}`} position={[fx, 0, fz]}>
-          {/* Gold Flagpole */}
           <mesh position={[0, 1.2, 0]}>
             <cylinderGeometry args={[0.04, 0.04, 2.4]} />
             <meshStandardMaterial color="#D4AF37" metalness={0.95} roughness={0.1} />
           </mesh>
-          {/* White Flag Cloth */}
           <mesh position={[0.3, 2.1, 0]}>
             <boxGeometry args={[0.6, 0.4, 0.02]} />
             <meshStandardMaterial color="#FFFFFF" roughness={0.4} />

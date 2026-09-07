@@ -7,7 +7,7 @@ import { VIVIAN_DATA, Experience } from '@/data/portfolioData';
 import * as THREE from 'three';
 
 export function TrophyRoom3D() {
-  const { openExperienceModal, ballPosition } = usePortfolio();
+  const { openExperienceModal, ballPosition, isMatchDay } = usePortfolio();
   const experiences = VIVIAN_DATA.experiences;
 
   return (
@@ -16,14 +16,14 @@ export function TrophyRoom3D() {
       <spotLight
         position={[0, 14, 0]}
         target-position={[0, 2, 0]}
-        intensity={1200}
+        intensity={isMatchDay ? 1800 : 1200}
         distance={35}
         angle={Math.PI / 2.5}
         penumbra={0.3}
         color="#FFFFFF"
         castShadow
       />
-      <pointLight position={[0, 6, 0]} intensity={450} color="#D4AF37" distance={22} />
+      <pointLight position={[0, 6, 0]} intensity={isMatchDay ? 600 : 450} color="#D4AF37" distance={22} />
 
       {/* Black Marble Trophy Stage Floor */}
       <mesh position={[0, 0.2, 0]} receiveShadow>
