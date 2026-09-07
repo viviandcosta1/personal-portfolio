@@ -28,29 +28,29 @@ export function TacticalBoard3D() {
       rotation={[0, -Math.PI / 4, 0]}
       onClick={() => openModal('tactical')}
     >
-      {/* Dedicated Tactical Board Spotlight */}
+      {/* High-Intensity White Spotlight */}
       <spotLight
         position={[0, 14, 4]}
         target-position={[0, 4, 0]}
-        intensity={900}
+        intensity={1000}
         distance={30}
         angle={Math.PI / 2.5}
         penumbra={0.3}
-        color="#38bdf8"
+        color="#FFFFFF"
         castShadow
       />
-      <pointLight position={[0, 4, 2]} intensity={300} color="#00f0ff" distance={15} />
+      <pointLight position={[0, 4, 2]} intensity={350} color="#D4AF37" distance={16} />
 
       {/* Base Platform */}
       <mesh position={[0, 0.2, 0]} receiveShadow>
         <cylinderGeometry args={[5, 5.4, 0.4, 24]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.4} metalness={0.8} />
+        <meshStandardMaterial color="#0D0D0D" roughness={0.3} metalness={0.9} />
       </mesh>
 
       {/* Hologram Emitter Projector Ring */}
       <mesh position={[0, 0.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[4.2, 4.6, 24]} />
-        <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} />
       </mesh>
 
       {/* Holographic Tactical Screen Group */}
@@ -59,9 +59,9 @@ export function TacticalBoard3D() {
         <mesh>
           <boxGeometry args={[9, 5.2, 0.15]} />
           <meshStandardMaterial
-            color="#0284c7"
+            color="#171717"
             transparent
-            opacity={0.5}
+            opacity={0.6}
             roughness={0.1}
             metalness={0.9}
           />
@@ -70,46 +70,47 @@ export function TacticalBoard3D() {
         {/* Tactical Pitch Lines on Hologram */}
         <mesh position={[0, 0, 0.09]}>
           <planeGeometry args={[8.4, 4.6]} />
-          <meshBasicMaterial color="#0369a1" transparent opacity={0.6} />
+          <meshBasicMaterial color="#262626" transparent opacity={0.6} />
         </mesh>
 
-        {/* 5 Tactical AI Nodes: Data -> Model -> API -> App -> User */}
+        {/* 5 Tactical AI Nodes: Formation Nodes */}
         {[
-          { x: -3.2, y: -1.2, label: 'DATA' },
-          { x: -1.6, y: 0.8, label: 'MODEL' },
-          { x: 0.2, y: -0.4, label: 'API' },
-          { x: 2.0, y: 1.0, label: 'APP' },
-          { x: 3.4, y: 0, label: 'USER' },
+          { x: 0, y: 1.4, label: 'AI/ML' },
+          { x: -2.4, y: 0.4, label: 'REACT' },
+          { x: 2.4, y: 0.4, label: 'NODE' },
+          { x: -1.2, y: -0.8, label: 'FASTAPI' },
+          { x: 1.2, y: -0.8, label: 'PYTHON' },
+          { x: 0, y: -1.8, label: 'AWS' },
         ].map((node, i) => (
           <group key={`tactical-node-${i}`} position={[node.x, node.y, 0.15]}>
             <mesh>
-              <circleGeometry args={[0.38, 16]} />
-              <meshBasicMaterial color="#00ff87" />
+              <circleGeometry args={[0.34, 16]} />
+              <meshBasicMaterial color="#FFFFFF" />
             </mesh>
             <mesh position={[0, 0, -0.01]}>
-              <ringGeometry args={[0.42, 0.56, 16]} />
-              <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} />
+              <ringGeometry args={[0.38, 0.52, 16]} />
+              <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} />
             </mesh>
           </group>
         ))}
 
         {/* Tactical Connection Line */}
         <mesh position={[0, 0, 0.12]}>
-          <planeGeometry args={[7.2, 0.06]} />
-          <meshBasicMaterial color="#00ff87" />
+          <planeGeometry args={[7.2, 0.04]} />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
 
         {/* Title Header */}
         <mesh position={[0, 2.2, 0.1]}>
-          <planeGeometry args={[7.0, 0.5]} />
-          <meshBasicMaterial color="#00ff87" />
+          <planeGeometry args={[7.0, 0.45]} />
+          <meshBasicMaterial color="#FFFFFF" />
         </mesh>
       </group>
 
-      {/* Interactive Prompt Floating Indicator */}
+      {/* Floating Indicator */}
       <mesh position={[0, 7.4, 0]}>
         <octahedronGeometry args={[0.45]} />
-        <meshBasicMaterial color={isNear ? '#00ff87' : '#ffd700'} />
+        <meshBasicMaterial color={isNear ? '#FFFFFF' : '#D4AF37'} />
       </mesh>
     </group>
   );

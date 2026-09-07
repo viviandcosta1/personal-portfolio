@@ -1,7 +1,7 @@
 'use client';
 
-import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
-import { Project, Experience, SkillCategory, VIVIAN_DATA } from '@/data/portfolioData';
+import React, { createContext, useContext, useState, useEffect, ReactNode, useCallback } from 'react';
+import { Project, Experience, SkillCategory, LockerItem, VIVIAN_DATA } from '@/data/portfolioData';
 import { ACHIEVEMENTS, Achievement } from '@/data/achievementsData';
 import { soundEngine } from '@/components/audio/SoundEngine';
 import confetti from 'canvas-confetti';
@@ -43,7 +43,10 @@ interface PortfolioContextType {
 
   selectedLocker: SkillCategory | null;
   setSelectedLocker: (s: SkillCategory | null) => void;
+  selectedTechLocker: LockerItem | null;
+  setSelectedTechLocker: (l: LockerItem | null) => void;
   openLockerModal: (s: SkillCategory) => void;
+  openTechLockerModal: (l: LockerItem) => void;
 
   // Camera & Navigation
   cameraZone: CameraZone;
@@ -55,6 +58,7 @@ interface PortfolioContextType {
   setBallPosition: (pos: [number, number, number]) => void;
   goalsScored: number;
   triggerGoal: (points?: number) => void;
+  goalNotification: string | null;
 
   // Arcade Penalty Shootout Minigame
   arcadeScore: number;
@@ -64,6 +68,17 @@ interface PortfolioContextType {
   shootTargetPos: [number, number, number] | null;
   shootTimestamp: number;
   shootAtTarget: (target: { id: string; x: number; y: number; z: number; points: number; project: Project }) => void;
+
+  // Mentality Mode Easter Egg (Press 7)
+  isMentalityModeActive: boolean;
+  triggerMentalityMode: () => void;
+
+  // Training Mode & Outro Cinematic
+  isTrainingModeActive: boolean;
+  toggleTrainingMode: () => void;
+  isOutroCinematicActive: boolean;
+  startOutroCinematic: () => void;
+  closeOutroCinematic: () => void;
 
   // Achievements
   unlockedAchievements: string[];
@@ -93,9 +108,11 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [selectedProject, setSelectedProject] = useState<Project | null>(VIVIAN_DATA.projects[0]);
   const [selectedExperience, setSelectedExperience] = useState<Experience | null>(VIVIAN_DATA.experiences[0]);
   const [selectedLocker, setSelectedLocker] = useState<SkillCategory | null>(VIVIAN_DATA.lockers[0]);
+  const [selectedTechLocker, setSelectedTechLocker] = useState<LockerItem | null>(VIVIAN_DATA.techLockers[0]);
 
-  const [ballPosition, setBallPosition] = useState<[number, number, number]>([0, 0.4, 0]);
+  const [ballPosition, setBallPosition] = useState<[number, number, number]>([0, 0.45, 0]);
   const [goalsScored, setGoalsScored] = useState(0);
+  const [goalNotification, setGoalNotification] = useState<string | null>(null);
 
   // Arcade Shootout Game State
   const [arcadeScore, setArcadeScore] = useState(0);
@@ -104,10 +121,15 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
   const [shootTargetPos, setShootTargetPos] = useState<[number, number, number] | null>(null);
   const [shootTimestamp, setShootTimestamp] = useState(0);
 
+  // Mentality Mode & Cinematic States
+  const [isMentalityModeActive, setIsMentalityModeActive] = useState(false);
+  const [isTrainingModeActive, setIsTrainingModeActive] = useState(false);
+  const [isOutroCinematicActive, setIsOutroCinematicActive] = useState(false);
+
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [recentAchievement, setRecentAchievement] = useState<Achievement | null>(null);
 
-  const [isMuted, setIsMuted] = useState(false);
+  const [isMuted, setIsMuted] = useState(true);
   const [isMiniMapOpen, setIsMiniMapOpen] = useState(false);
   const [isTerminalOpen, setIsTerminalOpen] = useState(false);
 
@@ -137,44 +159,80 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     }
   };
 
-  const unlockAchievement = (id: string) => {
-    if (unlockedAchievements.includes(id)) return;
-    const achievement = ACHIEVEMENTS.find(a => a.id === id);
-    if (!achievement) return;
+  const unlockAchievement = useCallback((id: string) => {
+    setUnlockedAchievements(prevList => {
+      if (prevList.includes(id)) return prevList;
+      const achievement = ACHIEVEMENTS.find(a => a.id === id);
+      if (!achievement) return prevList;
 
-    const nextList = [...unlockedAchievements, id];
-    setUnlockedAchievements(nextList);
-    setRecentAchievement(achievement);
-    soundEngine.playAchievement();
+      const nextList = [...prevList, id];
+      setRecentAchievement(achievement);
+      soundEngine.playAchievement();
 
-    try {
-      localStorage.setItem('vivian_achievements', JSON.stringify(nextList));
-    } catch {}
+      try {
+        localStorage.setItem('vivian_achievements', JSON.stringify(nextList));
+      } catch {}
 
-    // Trigger celebration confetti
-    try {
-      confetti({
-        particleCount: 50,
-        spread: 60,
-        origin: { y: 0.2, x: 0.5 },
-        colors: ['#00ff87', '#00f0ff', '#ffd700', '#ffffff']
-      });
-    } catch {}
+      // Trigger gold & white celebration confetti
+      try {
+        confetti({
+          particleCount: 60,
+          spread: 70,
+          origin: { y: 0.2, x: 0.5 },
+          colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#171717']
+        });
+      } catch {}
 
-    setTimeout(() => {
-      setRecentAchievement(prev => (prev?.id === id ? null : prev));
-    }, 5000);
-  };
+      setTimeout(() => {
+        setRecentAchievement(curr => (curr?.id === id ? null : curr));
+      }, 5000);
+
+      return nextList;
+    });
+  }, []);
 
   const dismissAchievement = () => {
     setRecentAchievement(null);
   };
 
+  // Trigger Mentality Mode #07 Easter Egg
+  const triggerMentalityMode = useCallback(() => {
+    if (isMentalityModeActive) return;
+    setIsMentalityModeActive(true);
+    soundEngine.playMentalityMode();
+    unlockAchievement('mentality_07');
+
+    try {
+      confetti({
+        particleCount: 120,
+        spread: 100,
+        origin: { y: 0.5 },
+        colors: ['#D4AF37', '#F5C542', '#FFFFFF', '#050505']
+      });
+    } catch {}
+
+    setTimeout(() => {
+      setIsMentalityModeActive(false);
+    }, 4500);
+  }, [isMentalityModeActive, unlockAchievement]);
+
+  // Global Keyboard '7' Easter Egg Listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === '7' && activeModal === 'none' && !isMentalityModeActive) {
+        triggerMentalityMode();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeModal, isMentalityModeActive, triggerMentalityMode]);
+
   const enterStadium = () => {
     setHasEnteredStadium(true);
+    soundEngine.stopHeartbeat();
     soundEngine.playFloodlight(0);
 
-    // Turn on floodlights sequentially with authentic delay
+    // Turn on floodlights sequentially with dramatic stadium timing
     [0, 1, 2, 3].forEach(idx => {
       setTimeout(() => {
         setFloodlightsActive(prev => {
@@ -196,6 +254,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setHasEnteredStadium(false);
     setCameraZone('entrance');
     setActiveModal('none');
+    setIsOutroCinematicActive(false);
   };
 
   const openModal = (type: ModalType) => {
@@ -231,6 +290,16 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     unlockAchievement('code_builder');
   };
 
+  const openTechLockerModal = (l: LockerItem) => {
+    setSelectedTechLocker(l);
+    // Find matching category
+    const cat = VIVIAN_DATA.lockers.find(c => c.lockerNumber === l.number) || VIVIAN_DATA.lockers[0];
+    setSelectedLocker(cat);
+    soundEngine.playLocker();
+    openModal('skills');
+    unlockAchievement('code_builder');
+  };
+
   const focusZone = (zone: CameraZone) => {
     soundEngine.playUiClick();
     setCameraZone(zone);
@@ -254,16 +323,22 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
       } catch {}
       return next;
     });
-    setShootStreak(prev => Math.min(prev + 1, 5));
+    setShootStreak(prev => Math.min(prev + 1, 7));
     soundEngine.playGoal();
     unlockAchievement('on_target');
+
+    // Trigger Gold Goal Notification
+    setGoalNotification("GOAL. PROJECT UNLOCKED.");
+    setTimeout(() => {
+      setGoalNotification(null);
+    }, 3200);
 
     try {
       confetti({
         particleCount: 100,
         spread: 90,
         origin: { y: 0.4 },
-        colors: ['#00ff87', '#00f0ff', '#ffffff', '#ffd700']
+        colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#050505']
       });
     } catch {}
   };
@@ -278,6 +353,21 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
     setTimeout(() => {
       triggerGoal(target.points);
     }, 450);
+  };
+
+  const toggleTrainingMode = () => {
+    soundEngine.playUiClick();
+    setIsTrainingModeActive(prev => !prev);
+  };
+
+  const startOutroCinematic = () => {
+    soundEngine.playUiClick();
+    setIsOutroCinematicActive(true);
+    setCameraZone('pitch');
+  };
+
+  const closeOutroCinematic = () => {
+    setIsOutroCinematicActive(false);
   };
 
   const toggleMiniMap = () => {
@@ -311,7 +401,10 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         openExperienceModal,
         selectedLocker,
         setSelectedLocker,
+        selectedTechLocker,
+        setSelectedTechLocker,
         openLockerModal,
+        openTechLockerModal,
         cameraZone,
         setCameraZone,
         focusZone,
@@ -319,6 +412,7 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         setBallPosition,
         goalsScored,
         triggerGoal,
+        goalNotification,
         arcadeScore,
         shootStreak,
         activeShootoutProject,
@@ -326,6 +420,13 @@ export function PortfolioProvider({ children }: { children: ReactNode }) {
         shootTargetPos,
         shootTimestamp,
         shootAtTarget,
+        isMentalityModeActive,
+        triggerMentalityMode,
+        isTrainingModeActive,
+        toggleTrainingMode,
+        isOutroCinematicActive,
+        startOutroCinematic,
+        closeOutroCinematic,
         unlockedAchievements,
         recentAchievement,
         unlockAchievement,

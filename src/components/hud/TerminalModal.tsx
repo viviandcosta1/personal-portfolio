@@ -5,7 +5,7 @@ import { usePortfolio } from '@/context/PortfolioContext';
 import { VIVIAN_DATA } from '@/data/portfolioData';
 import { soundEngine } from '@/components/audio/SoundEngine';
 import confetti from 'canvas-confetti';
-import { Terminal as TermIcon, X, Maximize2, Minimize2 } from 'lucide-react';
+import { Terminal as TermIcon, X } from 'lucide-react';
 
 interface TerminalLine {
   type: 'input' | 'output' | 'error' | 'success' | 'system';
@@ -13,15 +13,15 @@ interface TerminalLine {
 }
 
 export function TerminalModal() {
-  const { isTerminalOpen, toggleTerminal, unlockAchievement } = usePortfolio();
+  const { isTerminalOpen, toggleTerminal, unlockAchievement, triggerMentalityMode } = usePortfolio();
   const [input, setInput] = useState('');
   const [history, setHistory] = useState<TerminalLine[]>([
     { type: 'system', text: '╔══════════════════════════════════════════════════════════════╗' },
-    { type: 'system', text: '║  CAMP NOU DEVOPS ARENA • DEVELOPER OS v2.6.0                 ║' },
-    { type: 'system', text: '║  Vivian Dcosta • Full-Stack & AI/ML Developer Terminal       ║' },
+    { type: 'system', text: '║  MADRID NIGHT DEVELOPER ARENA • TERMINAL OS v3.0             ║' },
+    { type: 'system', text: '║  Vivian D\'costa • Full-Stack & AI/ML Developer Terminal      ║' },
     { type: 'system', text: '╚══════════════════════════════════════════════════════════════╝' },
     { type: 'output', text: 'Type "help" for a list of tactical console commands.' },
-    { type: 'output', text: 'Try typing "sudo make portfolio-awesome" for a special stadium effect.' },
+    { type: 'output', text: 'Type "mentality" or "7" to trigger Mentality Mode.' },
   ]);
 
   const inputRef = useRef<HTMLInputElement>(null);
@@ -54,16 +54,21 @@ export function TerminalModal() {
     if (lower === 'help') {
       newHistory.push(
         { type: 'output', text: 'AVAILABLE COMMANDS:' },
-        { type: 'output', text: '  about                  - Vivian Dcosta scouting report & player profile' },
-        { type: 'output', text: '  skills                 - Technical capabilities breakdown across 5 lockers' },
-        { type: 'output', text: '  projects               - Production engineering projects' },
-        { type: 'output', text: '  experience             - Career championship timeline' },
-        { type: 'output', text: '  stats                  - Official EA FC style player stats' },
-        { type: 'output', text: '  contact                - Direct email, phone, and social links' },
-        { type: 'output', text: '  sudo make portfolio-awesome - Unleash stadium celebration' },
+        { type: 'output', text: '  about                  - Vivian D\'costa player profile & scouting card' },
+        { type: 'output', text: '  lockers                - 10 Tech Stack Lockers (#07 to #16)' },
+        { type: 'output', text: '  projects               - Production software & AI platforms' },
+        { type: 'output', text: '  formation              - Tactical 4-2-3-1 technology formation' },
+        { type: 'output', text: '  experience             - Championship career milestones' },
+        { type: 'output', text: '  mentality / 7          - Trigger Number 7 Mentality Mode' },
+        { type: 'output', text: '  contact                - Direct email, phone, and professional links' },
+        { type: 'output', text: '  sudo make portfolio-awesome - Launch stadium celebration' },
         { type: 'output', text: '  clear                  - Clear terminal screen' },
         { type: 'output', text: '  exit                   - Close terminal console' }
       );
+    } else if (lower === '7' || lower === 'mentality') {
+      toggleTerminal();
+      triggerMentalityMode();
+      return;
     } else if (lower === 'sudo make portfolio-awesome' || lower === 'sudo make portfolio-awesome;') {
       soundEngine.playGoal();
       unlockAchievement('explorer');
@@ -72,35 +77,35 @@ export function TerminalModal() {
           particleCount: 150,
           spread: 120,
           origin: { y: 0.5 },
-          colors: ['#00ff87', '#00f0ff', '#ffd700', '#ff007f']
+          colors: ['#D4AF37', '#FFFFFF', '#F5C542', '#050505']
         });
       } catch {}
       newHistory.push(
         { type: 'success', text: '>>> EXECUTING AWESOMENESS OVERLOAD...' },
         { type: 'success', text: '>>> [OK] Floodlights boosted to 200%' },
         { type: 'success', text: '>>> [OK] AI Engine neural sync complete' },
-        { type: 'success', text: '>>> [OK] 150 Confetti particles launched' },
-        { type: 'success', text: '>>> STATUS: MAXIMUM CHAMPIONSHIP ENERGY UNLOCKED ⚽🔥' }
+        { type: 'success', text: '>>> [OK] 150 Gold particles launched' },
+        { type: 'success', text: '>>> STATUS: MAXIMUM CHAMPIONSHIP ENERGY UNLOCKED ⚽👑' }
       );
     } else if (lower === 'about') {
       newHistory.push(
         { type: 'output', text: `PLAYER: ${VIVIAN_DATA.scoutingReport.player}` },
         { type: 'output', text: `POSITION: ${VIVIAN_DATA.scoutingReport.position}` },
-        { type: 'output', text: `SPECIALITY: ${VIVIAN_DATA.scoutingReport.speciality}` },
+        { type: 'output', text: `ROLE: ${VIVIAN_DATA.scoutingReport.role}` },
+        { type: 'output', text: `FOOT: ${VIVIAN_DATA.scoutingReport.foot}` },
         { type: 'output', text: `LOCATION: ${VIVIAN_DATA.personal.location}` },
-        { type: 'output', text: `EDUCATION: ${VIVIAN_DATA.education.degree}` },
-        { type: 'output', text: `CGPA: ${VIVIAN_DATA.education.cgpa}` }
+        { type: 'output', text: `EDUCATION: ${VIVIAN_DATA.education.degree}` }
       );
-    } else if (lower === 'skills') {
-      newHistory.push({ type: 'output', text: 'TECHNICAL MATRIX:' });
-      VIVIAN_DATA.lockers.forEach(locker => {
+    } else if (lower === 'lockers' || lower === 'skills') {
+      newHistory.push({ type: 'output', text: '10 TECH STACK LOCKERS:' });
+      VIVIAN_DATA.techLockers.forEach(locker => {
         newHistory.push({
           type: 'output',
-          text: `  [#${locker.lockerNumber} ${locker.name}]: ${locker.skills.map(s => s.name).join(', ')}`
+          text: `  [#${locker.number < 10 ? `0${locker.number}` : locker.number} ${locker.tech}]: ${locker.description}`
         });
       });
     } else if (lower === 'projects') {
-      newHistory.push({ type: 'output', text: 'PRODUCTION PROJECTS:' });
+      newHistory.push({ type: 'output', text: 'PRODUCTION SOFTWARE PROJECTS:' });
       VIVIAN_DATA.projects.forEach(p => {
         newHistory.push({
           type: 'output',
@@ -115,16 +120,6 @@ export function TerminalModal() {
           text: `  🏆 ${e.company} - ${e.role} (${e.period}): ${e.summary}`
         });
       });
-    } else if (lower === 'stats') {
-      newHistory.push(
-        { type: 'output', text: `OVERALL OVR: ${VIVIAN_DATA.scoutingReport.overallRating}/100` },
-        { type: 'output', text: `  PACE (Rapid shipping): 93` },
-        { type: 'output', text: `  SHOOTING (Problem Solving): 95` },
-        { type: 'output', text: `  PASSING (API & Integration): 92` },
-        { type: 'output', text: `  DRIBBLING (Code Architecture): 91` },
-        { type: 'output', text: `  DEFENDING (Testing & Reliability): 94` },
-        { type: 'output', text: `  PHYSICAL (Continuous Learning): 95` }
-      );
     } else if (lower === 'contact') {
       newHistory.push(
         { type: 'output', text: `EMAIL:    ${VIVIAN_DATA.personal.email}` },
@@ -152,10 +147,10 @@ export function TerminalModal() {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="w-full max-w-3xl h-[520px] bg-[#05090f] border-2 border-[#00ff87]/60 rounded-2xl shadow-[0_0_50px_rgba(0,255,135,0.25)] flex flex-col overflow-hidden font-mono text-sm">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md select-none">
+      <div className="w-full max-w-3xl h-[520px] bg-[#050505] border-2 border-[#D4AF37]/60 rounded-2xl shadow-[0_0_50px_rgba(212,175,55,0.25)] flex flex-col overflow-hidden font-mono text-sm text-white">
         {/* Terminal Header Bar */}
-        <div className="flex items-center justify-between px-4 py-3 bg-slate-900 border-b border-slate-800">
+        <div className="flex items-center justify-between px-4 py-3 bg-[#0D0D0D] border-b border-[#171717]">
           <div className="flex items-center gap-2">
             <div className="flex items-center gap-1.5">
               <span className="w-3 h-3 rounded-full bg-rose-500 inline-block" />
@@ -178,16 +173,16 @@ export function TerminalModal() {
         {/* Terminal Screen Body */}
         <div
           onClick={() => inputRef.current?.focus()}
-          className="flex-1 p-4 overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-slate-800 cursor-text"
+          className="flex-1 p-4 overflow-y-auto space-y-1.5 scrollbar-thin scrollbar-thumb-[#171717] cursor-text"
         >
           {history.map((line, idx) => (
             <div
               key={idx}
               className={`leading-relaxed ${
                 line.type === 'input'
-                  ? 'text-cyan-300 font-bold'
+                  ? 'text-white font-bold'
                   : line.type === 'system'
-                  ? 'text-[#00ff87]'
+                  ? 'text-[#D4AF37]'
                   : line.type === 'success'
                   ? 'text-emerald-400'
                   : line.type === 'error'
@@ -202,8 +197,8 @@ export function TerminalModal() {
         </div>
 
         {/* Input Prompt Form */}
-        <form onSubmit={handleCommand} className="flex items-center gap-2 p-3 bg-slate-950 border-t border-slate-800">
-          <span className="text-[#00ff87] font-bold">vivian@stadium:~$</span>
+        <form onSubmit={handleCommand} className="flex items-center gap-2 p-3 bg-[#0D0D0D] border-t border-[#171717]">
+          <span className="text-[#D4AF37] font-bold">vivian@stadium:~$</span>
           <input
             ref={inputRef}
             type="text"

@@ -31,22 +31,22 @@ interface StadiumCanvasProps {
 
 export function StadiumCanvas({ controlsRef }: StadiumCanvasProps) {
   return (
-    <div className="absolute inset-0 w-full h-full bg-[#040609] select-none">
+    <div className="absolute inset-0 w-full h-full bg-[#050505] select-none">
       <Canvas
         shadows
         camera={{ position: [0, 22, 38], fov: 48, near: 0.1, far: 400 }}
         gl={{ antialias: true, alpha: false, powerPreference: 'high-performance' }}
       >
-        <color attach="background" args={['#040609']} />
-        <fog attach="fog" args={['#040609', 80, 320]} />
+        <color attach="background" args={['#050505']} />
+        <fog attach="fog" args={['#050505', 70, 300]} />
 
-        {/* Dynamic High-Visibility Stadium Lighting */}
-        <ambientLight intensity={0.85} color="#f1f5f9" />
-        <hemisphereLight args={['#38bdf8', '#0f172a', 0.8]} />
+        {/* Dynamic Madrid Night Stadium Lighting */}
+        <ambientLight intensity={0.7} color="#FFFFFF" />
+        <hemisphereLight args={['#FFFFFF', '#050505', 0.6]} />
         <directionalLight
           position={[0, 45, 0]}
-          intensity={1.0}
-          color="#ffffff"
+          intensity={1.1}
+          color="#FFFFFF"
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}
@@ -113,7 +113,7 @@ function CameraController() {
           break;
         }
         case 'tactical': {
-          // Tactical AI/ML Hologram view
+          // Tactical Formation view
           targetPos.set(14, 7.5, -18);
           targetLookAt.set(22, 3.2, -28);
           break;

@@ -19,39 +19,39 @@ export function ExitTunnel3D() {
       {/* Tunnel Floor Runway */}
       <mesh position={[0, 0.1, 4]} receiveShadow>
         <boxGeometry args={[10, 0.2, 12]} />
-        <meshStandardMaterial color="#0f172a" roughness={0.3} metalness={0.8} />
+        <meshStandardMaterial color="#050505" roughness={0.3} metalness={0.9} />
       </mesh>
 
-      {/* Runway Floor Lighting Strips */}
+      {/* Runway Floor Lighting Strips in Gold */}
       {[-4.2, 4.2].map((x, i) => (
         <mesh key={`runway-strip-${i}`} position={[x, 0.22, 4]}>
           <boxGeometry args={[0.2, 0.05, 11]} />
-          <meshBasicMaterial color="#00ff87" />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
       ))}
 
-      {/* 5 Illuminated Tunnel Arches */}
+      {/* 5 Illuminated Tunnel Arches in White & Gold */}
       {[0, 2.5, 5, 7.5, 10].map((z, idx) => (
         <group key={`arch-${idx}`} position={[0, 0, z]}>
           {/* Left Column */}
           <mesh position={[-4.5, 3, 0]}>
             <boxGeometry args={[0.6, 6, 0.6]} />
-            <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.2} />
+            <meshStandardMaterial color="#171717" metalness={0.8} roughness={0.2} />
           </mesh>
           {/* Right Column */}
           <mesh position={[4.5, 3, 0]}>
             <boxGeometry args={[0.6, 6, 0.6]} />
-            <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.2} />
+            <meshStandardMaterial color="#171717" metalness={0.8} roughness={0.2} />
           </mesh>
           {/* Top Beam */}
           <mesh position={[0, 6, 0]}>
             <boxGeometry args={[9.6, 0.6, 0.6]} />
-            <meshStandardMaterial color="#1e293b" metalness={0.8} roughness={0.2} />
+            <meshStandardMaterial color="#171717" metalness={0.8} roughness={0.2} />
           </mesh>
           {/* Arch Neon Inlay */}
           <mesh position={[0, 5.8, 0.32]}>
             <boxGeometry args={[8.8, 0.1, 0.05]} />
-            <meshBasicMaterial color="#00f0ff" />
+            <meshBasicMaterial color="#FFFFFF" />
           </mesh>
         </group>
       ))}
@@ -60,16 +60,16 @@ export function ExitTunnel3D() {
       <group position={[0, 7.2, 0]}>
         <mesh>
           <boxGeometry args={[12, 1.4, 0.3]} />
-          <meshStandardMaterial color="#05070a" />
+          <meshStandardMaterial color="#050505" />
         </mesh>
         <mesh position={[0, 0, 0.18]}>
           <planeGeometry args={[11.6, 1.1]} />
-          <meshBasicMaterial color="#00ff87" />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
       </group>
 
       {/* Interactive Portal Beacon */}
-      <pointLight color="#00ff87" intensity={isNear ? 200 : 80} distance={15} position={[0, 3, 4]} />
+      <pointLight color="#D4AF37" intensity={isNear ? 240 : 100} distance={15} position={[0, 3, 4]} />
     </group>
   );
 }
@@ -94,19 +94,19 @@ export function SecretTunnel3D() {
       {/* Secret Hatch / Terminal Console Base */}
       <mesh position={[0, 0.8, 0]} castShadow>
         <boxGeometry args={[2.4, 1.6, 1.8]} />
-        <meshStandardMaterial color="#0f172a" metalness={0.9} roughness={0.2} />
+        <meshStandardMaterial color="#0D0D0D" metalness={0.9} roughness={0.2} />
       </mesh>
 
       {/* Slanted Terminal Screen */}
       <mesh position={[0, 1.7, 0]} rotation={[-0.5, 0, 0]}>
         <boxGeometry args={[2, 1.2, 0.1]} />
-        <meshBasicMaterial color="#00ff87" />
+        <meshBasicMaterial color="#FFFFFF" />
       </mesh>
 
       {/* Floating Hologram Indicator */}
       <mesh position={[0, 2.8, 0]}>
         <tetrahedronGeometry args={[0.3]} />
-        <meshBasicMaterial color={isNear ? '#00f0ff' : '#a855f7'} />
+        <meshBasicMaterial color={isNear ? '#D4AF37' : '#FFFFFF'} />
       </mesh>
     </group>
   );

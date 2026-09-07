@@ -26,35 +26,43 @@ export const ACHIEVEMENTS: Achievement[] = [
   },
   {
     id: 'code_builder',
-    title: 'CODE BUILDER',
+    title: 'LOCKER ROOM CRAFT',
     icon: '💻',
-    description: 'Explored all 5 technical stack lockers in the locker room.',
+    description: 'Explored the 10 technology lockers in the locker room.',
     category: 'TACTICAL',
     points: 200
   },
   {
     id: 'trophy_hunter',
-    title: 'TROPHY HUNTER',
+    title: 'CHAMPIONS TROPHY ROOM',
     icon: '🏆',
-    description: 'Inspected all 3 championship experience trophies.',
+    description: 'Inspected all 3 championship career milestones.',
     category: 'EXPLORATION',
     points: 200
   },
   {
     id: 'tactical_genius',
-    title: 'TACTICAL GENIUS',
+    title: 'TACTICAL FORMATION',
     icon: '🧠',
-    description: 'Simulated the full AI/ML Data-to-Production pipeline.',
+    description: 'Executed the tactical formation and full-stack architecture pass.',
     category: 'TACTICAL',
     points: 250
   },
   {
     id: 'full_stack',
-    title: 'FULL STACK STRIKER',
+    title: 'MATCH WINNER',
     icon: '🚀',
-    description: 'Reviewed all 3 production projects in the training ground.',
+    description: 'Reviewed all production software projects in the stadium.',
     category: 'EXPLORATION',
     points: 200
+  },
+  {
+    id: 'mentality_07',
+    title: 'MENTALITY MODE #07',
+    icon: '👑',
+    description: 'Pressed [7] to activate the hidden Number 7 Mentality Mode.',
+    category: 'SECRET',
+    points: 700
   },
   {
     id: 'explorer',

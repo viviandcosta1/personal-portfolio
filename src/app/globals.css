@@ -2,49 +2,87 @@
 
 @layer base {
   :root {
-    --pitch-green: #00ff87;
-    --cyber-cyan: #00f0ff;
-    --gold-trophy: #ffd700;
+    --color-pure-white: #FFFFFF;
+    --color-deep-black: #050505;
+    --color-charcoal: #0D0D0D;
+    --color-metallic-gold: #D4AF37;
+    --color-warm-gold: #F5C542;
+    --color-dark-silver: #171717;
+    --color-subtle-silver: #262626;
   }
 
   body {
-    background-color: #040609;
-    color: #f8fafc;
+    background-color: #050505;
+    color: #FFFFFF;
     overflow: hidden;
     user-select: none;
     -webkit-font-smoothing: antialiased;
   }
 
-  /* Custom Scrollbar */
+  /* Custom Slim Sleek Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #090d16;
+    background: #0D0D0D;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #1e293b;
+    background: #171717;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #00ff87;
+    background: #D4AF37;
   }
 }
 
-/* Scanline and Cyber Glow Utilities */
+/* Metallic Gold Shimmer & Sweep Animation */
+@keyframes goldShimmer {
+  0% {
+    background-position: -200% 0;
+  }
+  100% {
+    background-position: 200% 0;
+  }
+}
+
+.gold-sweep {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    rgba(212, 175, 55, 0.25) 50%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: goldShimmer 3.5s infinite;
+}
+
+.gold-border-glow {
+  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.1);
+}
+
+.white-stadium-glow {
+  box-shadow: 0 0 35px rgba(255, 255, 255, 0.2);
+}
+
+/* Stadium scanlines */
 .stadium-scanlines {
   background: linear-gradient(
-    rgba(18, 16, 16, 0) 50%, 
-    rgba(0, 0, 0, 0.25) 50%
+    rgba(13, 13, 13, 0) 50%, 
+    rgba(5, 5, 5, 0.4) 50%
   ), linear-gradient(
     90deg,
-    rgba(255, 0, 0, 0.03),
-    rgba(0, 255, 0, 0.01),
-    rgba(0, 0, 255, 0.03)
+    rgba(255, 255, 255, 0.02),
+    rgba(212, 175, 55, 0.01),
+    rgba(255, 255, 255, 0.02)
   );
-  background-size: 100% 3px, 6px 100%;
+  background-size: 100% 4px, 8px 100%;
+}
+
+/* Perspective 3D Card tilt container */
+.perspective-1000 {
+  perspective: 1000px;
 }

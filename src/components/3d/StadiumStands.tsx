@@ -7,7 +7,6 @@ export function StadiumStands() {
   const pitchWidth = 52;
   const pitchLength = 76;
 
-  // East & West Main Stands (Length: 76)
   return (
     <group>
       {/* East Grandstand */}
@@ -43,10 +42,10 @@ export function StadiumStands() {
         rotation={[0, Math.PI, 0]}
         length={pitchWidth + 10}
         tiers={6}
-        title="SOUTH STAND • CAMP NOU DEVOPS"
+        title="SOUTH STAND • MADRID NIGHT DEVOPS"
       />
 
-      {/* Glowing Neon Stadium Roof Trusses */}
+      {/* Stadium Roof Trusses */}
       <RoofTrusses />
     </group>
   );
@@ -68,7 +67,7 @@ function GrandstandTier({
   // Generate spectator silhouettes on the tiers
   const crowdDots = useMemo(() => {
     const dots: { x: number; y: number; z: number; color: string }[] = [];
-    const colors = ['#00ff87', '#00f0ff', '#ffffff', '#38bdf8', '#a855f7'];
+    const colors = ['#FFFFFF', '#D4AF37', '#F5C542', '#A1A1AA', '#E4E4E7'];
 
     for (let t = 1; t <= tiers; t++) {
       const numPeople = Math.floor(length * 1.5);
@@ -91,20 +90,20 @@ function GrandstandTier({
       {Array.from({ length: tiers }).map((_, i) => (
         <mesh key={`tier-step-${i}`} position={[0, (i + 1) * 0.55, (i + 1) * 1.5]} receiveShadow>
           <boxGeometry args={[length, 1.1, 1.5]} />
-          <meshStandardMaterial color="#111827" roughness={0.8} metalness={0.2} />
+          <meshStandardMaterial color="#0D0D0D" roughness={0.8} metalness={0.2} />
         </mesh>
       ))}
 
       {/* Stand Structural Back Wall */}
       <mesh position={[0, (tiers * 1.1) / 2 + 2, tiers * 1.5 + 0.8]}>
         <boxGeometry args={[length, tiers * 1.1 + 4, 1.2]} />
-        <meshStandardMaterial color="#0b0f17" roughness={0.9} />
+        <meshStandardMaterial color="#050505" roughness={0.9} />
       </mesh>
 
       {/* Stand Banner */}
       <mesh position={[0, tiers * 1.1 + 3.5, tiers * 1.5 + 0.1]}>
         <boxGeometry args={[length * 0.7, 1.2, 0.2]} />
-        <meshBasicMaterial color="#00ff87" />
+        <meshBasicMaterial color="#FFFFFF" />
       </mesh>
 
       {/* Crowd Silhouettes */}
@@ -121,14 +120,14 @@ function GrandstandTier({
 function RoofTrusses() {
   return (
     <group position={[0, 24, 0]}>
-      {/* Outer Stadium Glow Ring */}
+      {/* Outer Stadium Glow Ring in Pure White & Gold */}
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[44, 46, 32]} />
-        <meshBasicMaterial color="#00ff87" side={THREE.DoubleSide} transparent opacity={0.3} />
+        <meshBasicMaterial color="#FFFFFF" side={THREE.DoubleSide} transparent opacity={0.2} />
       </mesh>
       <mesh rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[47, 48, 32]} />
-        <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} transparent opacity={0.2} />
+        <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} transparent opacity={0.15} />
       </mesh>
     </group>
   );

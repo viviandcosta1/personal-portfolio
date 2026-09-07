@@ -32,7 +32,7 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
   const kickCooldown = useRef(0);
   const lastShootTimestamp = useRef(0);
 
-  // Ball surface canvas texture
+  // Ball surface canvas texture (White leather + Gold & Charcoal geometric panels)
   const ballTexture = useMemo(() => {
     if (typeof window === 'undefined') return null;
     const canvas = document.createElement('canvas');
@@ -41,10 +41,10 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    ctx.fillStyle = '#f8fafc';
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(0, 0, 512, 512);
 
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#0D0D0D';
     const drawPentagon = (x: number, y: number, r: number) => {
       ctx.beginPath();
       for (let i = 0; i < 5; i++) {
@@ -64,10 +64,11 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
     drawPentagon(128, 384, 48);
     drawPentagon(384, 384, 48);
 
-    ctx.strokeStyle = '#00ff87';
+    // Subtle Gold Trim Rings
+    ctx.strokeStyle = '#D4AF37';
     ctx.lineWidth = 6;
     ctx.beginPath();
-    ctx.arc(256, 256, 180, 0, Math.PI * 2);
+    ctx.arc(256, 256, 175, 0, Math.PI * 2);
     ctx.stroke();
 
     const texture = new THREE.CanvasTexture(canvas);
@@ -127,7 +128,7 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
 
     if (moveDir.lengthSq() > 0) {
       moveDir.normalize();
-      const speed = ctrl.sprint ? 32 : 18;
+      const speed = ctrl.sprint ? 34 : 20;
       vel.current.x += moveDir.x * speed * dt;
       vel.current.z += moveDir.z * speed * dt;
     }
@@ -136,15 +137,15 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
     kickCooldown.current -= dt;
     if (ctrl.kick && kickCooldown.current <= 0) {
       kickCooldown.current = 0.4;
-      const kickImpulse = ctrl.sprint ? 38 : 26;
+      const kickImpulse = ctrl.sprint ? 40 : 28;
       const kickDir = moveDir.lengthSq() > 0 ? moveDir.clone() : new THREE.Vector3(0, 0, -1);
       vel.current.x = kickDir.x * kickImpulse;
       vel.current.z = kickDir.z * kickImpulse;
-      vel.current.y = 7;
+      vel.current.y = 7.5;
       soundEngine.playKick(ctrl.sprint ? 1.4 : 1.0);
     }
 
-    // Physics integration
+    // Gravity & Friction Physics integration
     vel.current.y -= 19.8 * dt;
 
     const friction = 0.94;
@@ -158,13 +159,13 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
       pos.current.y = radius;
       if (vel.current.y < -1) {
         vel.current.y = -vel.current.y * 0.55;
-        soundEngine.playKick(0.4);
+        soundEngine.playKick(0.35);
       } else {
         vel.current.y = 0;
       }
     }
 
-    // Boundaries
+    // Pitch Boundaries
     const maxX = 25;
     const maxZ = 37;
     if (Math.abs(pos.current.x) > maxX) {
@@ -180,7 +181,7 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
 
     ballMeshRef.current.position.copy(pos.current);
 
-    // Rotation
+    // Realistic rolling spin
     const horizontalSpeed = Math.sqrt(vel.current.x * vel.current.x + vel.current.z * vel.current.z);
     if (horizontalSpeed > 0.05) {
       const rotAngle = (horizontalSpeed / radius) * dt;
@@ -199,23 +200,26 @@ export function InteractiveBall({ controlsRef }: InteractiveBallProps) {
 
   return (
     <group>
+      {/* Contact Shadow */}
       <mesh ref={shadowMeshRef} rotation={[-Math.PI / 2, 0, 0]}>
-        <circleGeometry args={[radius * 1.1, 24]} />
+        <circleGeometry args={[radius * 1.15, 24]} />
         <meshBasicMaterial color="#000000" transparent opacity={0.5} depthWrite={false} />
       </mesh>
 
+      {/* Football Sphere */}
       <mesh ref={ballMeshRef} castShadow position={[0, radius, 0]}>
         <sphereGeometry args={[radius, 32, 32]} />
         <meshStandardMaterial
           map={ballTexture || undefined}
-          color={ballTexture ? '#ffffff' : '#f8fafc'}
-          roughness={0.25}
-          metalness={0.1}
+          color={ballTexture ? '#FFFFFF' : '#FFFFFF'}
+          roughness={0.2}
+          metalness={0.08}
         />
 
+        {/* Subtle Gold Outer Aura Ring */}
         <mesh rotation={[Math.PI / 2, 0, 0]}>
-          <ringGeometry args={[radius * 1.02, radius * 1.08, 32]} />
-          <meshBasicMaterial color="#00ff87" transparent opacity={0.3} side={THREE.DoubleSide} />
+          <ringGeometry args={[radius * 1.02, radius * 1.06, 32]} />
+          <meshBasicMaterial color="#D4AF37" transparent opacity={0.4} side={THREE.DoubleSide} />
         </mesh>
       </mesh>
     </group>

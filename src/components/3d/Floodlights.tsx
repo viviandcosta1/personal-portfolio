@@ -51,7 +51,7 @@ function FloodlightTower({
 
   useFrame((_, delta) => {
     if (lightRef.current) {
-      const targetIntensity = isActive ? 800 : 0;
+      const targetIntensity = isActive ? 1000 : 0;
       lightRef.current.intensity = THREE.MathUtils.damp(
         lightRef.current.intensity,
         targetIntensity,
@@ -66,20 +66,20 @@ function FloodlightTower({
       {/* Tower Base Concrete Plinth */}
       <mesh position={[0, 1, 0]}>
         <boxGeometry args={[3, 2, 3]} />
-        <meshStandardMaterial color="#1a1e24" roughness={0.9} />
+        <meshStandardMaterial color="#0D0D0D" roughness={0.9} />
       </mesh>
 
       {/* Main Steel Truss Columns */}
       <mesh position={[0, 12, 0]}>
         <cylinderGeometry args={[0.5, 1.2, 22, 6]} />
-        <meshStandardMaterial color="#2d3748" metalness={0.7} roughness={0.4} />
+        <meshStandardMaterial color="#171717" metalness={0.8} roughness={0.3} />
       </mesh>
 
       {/* Cross Lattice Bracing */}
       {[5, 10, 15, 20].map((h, i) => (
         <mesh key={`brace-${i}`} position={[0, h, 0]}>
           <boxGeometry args={[1.8, 0.2, 1.8]} />
-          <meshStandardMaterial color="#1e293b" metalness={0.6} roughness={0.5} />
+          <meshStandardMaterial color="#262626" metalness={0.7} roughness={0.4} />
         </mesh>
       ))}
 
@@ -87,10 +87,10 @@ function FloodlightTower({
       <group position={[0, 23, 0]}>
         <mesh rotation={[0.4 * (position[2] > 0 ? -1 : 1), 0, 0]}>
           <boxGeometry args={[6, 3, 0.8]} />
-          <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.3} />
+          <meshStandardMaterial color="#050505" metalness={0.9} roughness={0.2} />
         </mesh>
 
-        {/* 3x2 Matrix of High-Intensity LED Bulbs */}
+        {/* 3x2 Matrix of High-Intensity Pure White LED Bulbs */}
         {[-2, 0, 2].map((bx, bi) =>
           [-0.8, 0.8].map((by, bj) => (
             <mesh
@@ -100,7 +100,7 @@ function FloodlightTower({
             >
               <circleGeometry args={[0.6, 16]} />
               <meshBasicMaterial
-                color={isActive ? '#ffffff' : '#334155'}
+                color={isActive ? '#FFFFFF' : '#171717'}
               />
             </mesh>
           ))
@@ -115,9 +115,9 @@ function FloodlightTower({
           >
             <coneGeometry args={[6, 16, 16, 1, true]} />
             <meshBasicMaterial
-              color="#e2f7ff"
+              color="#FFFFFF"
               transparent
-              opacity={0.06}
+              opacity={0.07}
               side={THREE.DoubleSide}
               depthWrite={false}
             />
@@ -127,11 +127,11 @@ function FloodlightTower({
         {/* Spot Light source */}
         <spotLight
           ref={lightRef}
-          color="#f8fafc"
+          color="#FFFFFF"
           intensity={0}
-          distance={120}
+          distance={130}
           angle={Math.PI / 4}
-          penumbra={0.6}
+          penumbra={0.5}
           castShadow
           shadow-mapSize-width={1024}
           shadow-mapSize-height={1024}

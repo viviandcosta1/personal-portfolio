@@ -9,6 +9,10 @@ import { TacticalHUD } from '@/components/hud/TacticalHUD';
 import { MiniMap } from '@/components/hud/MiniMap';
 import { MobileControls } from '@/components/hud/MobileControls';
 import { AchievementBanner } from '@/components/hud/AchievementBanner';
+import { MentalityModeOverlay } from '@/components/hud/MentalityModeOverlay';
+import { TrainingModeHUD } from '@/components/hud/TrainingModeHUD';
+import { GoalUnlockedBanner } from '@/components/hud/GoalUnlockedBanner';
+import { OutroCinematic } from '@/components/hud/OutroCinematic';
 import { TerminalModal } from '@/components/hud/TerminalModal';
 import { ProjectShootoutGame } from '@/components/game/ProjectShootoutGame';
 import { PlayerProfileModal } from '@/components/modals/PlayerProfileModal';
@@ -30,17 +34,29 @@ function StadiumExperience() {
   } = useControls();
 
   return (
-    <main className="relative w-screen h-screen overflow-hidden bg-[#040609] select-none touch-none">
+    <main className="relative w-screen h-screen overflow-hidden bg-[#050505] select-none touch-none">
       {/* 3D Physics Stadium Canvas */}
       <StadiumCanvas controlsRef={controlsRef} />
 
-      {/* Cinematic Entrance Overlay */}
+      {/* Opening Cinematic Football Tunnel Hero Overlay */}
       <HeroOverlay />
 
-      {/* Floating Tactical Broadcast HUD */}
+      {/* Broadcast HUD */}
       <TacticalHUD />
 
-      {/* Interactive Arcade Target Shootout Mode for Projects */}
+      {/* Goal Scoring Banner */}
+      <GoalUnlockedBanner />
+
+      {/* Number 7 Mentality Mode Cinematic Overlay */}
+      <MentalityModeOverlay />
+
+      {/* Interactive Training Mode HUD */}
+      <TrainingModeHUD />
+
+      {/* Outro Cinematic */}
+      <OutroCinematic />
+
+      {/* Arcade Target Shootout Mode for Projects */}
       <ProjectShootoutGame />
 
       {/* Tactical Radar Mini-Map */}
@@ -57,7 +73,7 @@ function StadiumExperience() {
       {/* Achievement Pop-up Banner */}
       <AchievementBanner />
 
-      {/* Interactive Cyberpunk Developer Terminal */}
+      {/* Interactive Developer Terminal Console */}
       <TerminalModal />
 
       {/* Section Feature Modals */}

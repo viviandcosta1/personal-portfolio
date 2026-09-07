@@ -3,7 +3,7 @@
 class SoundEngine {
   private ctx: AudioContext | null = null;
   private isMuted: boolean = false;
-  private crowdNode: AudioNode | null = null;
+  private heartbeatTimer: number | null = null;
 
   constructor() {
     // Initialized on first user interaction
@@ -27,12 +27,19 @@ class SoundEngine {
     if (typeof window !== 'undefined') {
       localStorage.setItem('vivian_portfolio_muted', muted ? 'true' : 'false');
     }
+    if (muted) {
+      this.stopHeartbeat();
+    }
   }
 
   public getMuted(): boolean {
-    if (typeof window !== 'undefined' && localStorage.getItem('vivian_portfolio_muted') === 'true') {
-      return true;
+    if (typeof window !== 'undefined') {
+      const saved = localStorage.getItem('vivian_portfolio_muted');
+      if (saved !== null) {
+        return saved === 'true';
+      }
     }
+    // Default muted as requested for non-intrusive sound
     return this.isMuted;
   }
 
@@ -40,6 +47,100 @@ class SoundEngine {
     const next = !this.getMuted();
     this.setMuted(next);
     return next;
+  }
+
+  // Heartbeat sound for Opening Tunnel sequence
+  public playHeartbeat() {
+    if (this.getMuted()) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      // Lub (First lower pulse)
+      const osc1 = this.ctx.createOscillator();
+      const gain1 = this.ctx.createGain();
+      osc1.type = 'sine';
+      osc1.frequency.setValueAtTime(65, t);
+      osc1.frequency.exponentialRampToValueAtTime(35, t + 0.12);
+      gain1.gain.setValueAtTime(0.4, t);
+      gain1.gain.exponentialRampToValueAtTime(0.001, t + 0.14);
+      osc1.connect(gain1);
+      gain1.connect(this.ctx.destination);
+      osc1.start(t);
+      osc1.stop(t + 0.15);
+
+      // Dub (Second higher pulse)
+      const osc2 = this.ctx.createOscillator();
+      const gain2 = this.ctx.createGain();
+      osc2.type = 'sine';
+      osc2.frequency.setValueAtTime(80, t + 0.16);
+      osc2.frequency.exponentialRampToValueAtTime(40, t + 0.3);
+      gain2.gain.setValueAtTime(0.45, t + 0.16);
+      gain2.gain.exponentialRampToValueAtTime(0.001, t + 0.32);
+      osc2.connect(gain2);
+      gain2.connect(this.ctx.destination);
+      osc2.start(t + 0.16);
+      osc2.stop(t + 0.34);
+    } catch {
+      // Audio fallback
+    }
+  }
+
+  public startHeartbeatLoop() {
+    if (this.heartbeatTimer) return;
+    this.playHeartbeat();
+    this.heartbeatTimer = window.setInterval(() => {
+      this.playHeartbeat();
+    }, 1200);
+  }
+
+  public stopHeartbeat() {
+    if (this.heartbeatTimer) {
+      clearInterval(this.heartbeatTimer);
+      this.heartbeatTimer = null;
+    }
+  }
+
+  // Mentality 07 Easter Egg boom + gold crystalline chime
+  public playMentalityMode() {
+    if (this.getMuted()) return;
+    this.initContext();
+    if (!this.ctx) return;
+
+    try {
+      const t = this.ctx.currentTime;
+      // Deep sub-bass drop
+      const sub = this.ctx.createOscillator();
+      const subGain = this.ctx.createGain();
+      sub.type = 'sine';
+      sub.frequency.setValueAtTime(110, t);
+      sub.frequency.exponentialRampToValueAtTime(28, t + 1.2);
+      subGain.gain.setValueAtTime(0.8, t);
+      subGain.gain.exponentialRampToValueAtTime(0.001, t + 1.4);
+      sub.connect(subGain);
+      subGain.connect(this.ctx.destination);
+      sub.start(t);
+      sub.stop(t + 1.5);
+
+      // Crystalline Gold Fanfare (7th harmonic notes)
+      const chord = [349.23, 440, 523.25, 659.25, 783.99, 1046.5];
+      chord.forEach((freq, idx) => {
+        if (!this.ctx) return;
+        const osc = this.ctx.createOscillator();
+        const gain = this.ctx.createGain();
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(freq, t + 0.15 + idx * 0.08);
+        gain.gain.setValueAtTime(0.2, t + 0.15 + idx * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 1.0 + idx * 0.08);
+        osc.connect(gain);
+        gain.connect(this.ctx.destination);
+        osc.start(t + 0.15 + idx * 0.08);
+        osc.stop(t + 1.1 + idx * 0.08);
+      });
+    } catch {
+      // Audio fallback
+    }
   }
 
   // Kick ball sound: punchy bass transient + leather thud
@@ -54,7 +155,7 @@ class SoundEngine {
       const gain = this.ctx.createGain();
 
       osc.type = 'sine';
-      osc.frequency.setValueAtTime(140 * Math.max(0.6, intensity), t);
+      osc.frequency.setValueAtTime(150 * Math.max(0.6, intensity), t);
       osc.frequency.exponentialRampToValueAtTime(32, t + 0.12);
 
       gain.gain.setValueAtTime(0.7 * Math.min(1.2, intensity), t);
@@ -66,7 +167,7 @@ class SoundEngine {
       osc.start(t);
       osc.stop(t + 0.15);
 
-      // Add slight snap noise
+      // Add leather snap noise
       const bufferSize = this.ctx.sampleRate * 0.04;
       const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
       const data = buffer.getChannelData(0);
@@ -76,7 +177,7 @@ class SoundEngine {
       const noise = this.ctx.createBufferSource();
       noise.buffer = buffer;
       const noiseGain = this.ctx.createGain();
-      noiseGain.gain.setValueAtTime(0.18 * intensity, t);
+      noiseGain.gain.setValueAtTime(0.2 * intensity, t);
       noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.04);
       noise.connect(noiseGain);
       noiseGain.connect(this.ctx.destination);
@@ -86,7 +187,7 @@ class SoundEngine {
     }
   }
 
-  // Goal explosion sound: Stadium horn + ascending triumphal chord
+  // Goal explosion sound: Stadium horn + crowd cheer surge + triumphant chord
   public playGoal() {
     if (this.getMuted()) return;
     this.initContext();
@@ -94,7 +195,7 @@ class SoundEngine {
 
     try {
       const t = this.ctx.currentTime;
-      const freqs = [220, 277.18, 329.63, 440, 554.37]; // A major chord
+      const freqs = [261.63, 329.63, 392.00, 523.25, 659.25]; // C Major triumph
 
       freqs.forEach((freq, idx) => {
         if (!this.ctx) return;
@@ -102,25 +203,41 @@ class SoundEngine {
         const gain = this.ctx.createGain();
 
         osc.type = 'sawtooth';
-        osc.frequency.setValueAtTime(freq, t + idx * 0.05);
-        osc.frequency.exponentialRampToValueAtTime(freq * 1.5, t + 0.8 + idx * 0.05);
+        osc.frequency.setValueAtTime(freq, t + idx * 0.04);
+        osc.frequency.exponentialRampToValueAtTime(freq * 1.25, t + 0.8 + idx * 0.04);
 
         gain.gain.setValueAtTime(0, t);
-        gain.gain.linearRampToValueAtTime(0.15, t + 0.08 + idx * 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + 1.2 + idx * 0.05);
+        gain.gain.linearRampToValueAtTime(0.18, t + 0.06 + idx * 0.04);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + 1.4 + idx * 0.04);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
 
-        osc.start(t + idx * 0.05);
-        osc.stop(t + 1.3 + idx * 0.05);
+        osc.start(t + idx * 0.04);
+        osc.stop(t + 1.5 + idx * 0.04);
       });
+
+      // Stadium roar noise burst
+      const bufferSize = this.ctx.sampleRate * 0.8;
+      const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+      const data = buffer.getChannelData(0);
+      for (let i = 0; i < bufferSize; i++) {
+        data[i] = (Math.random() * 2 - 1) * Math.sin((i / bufferSize) * Math.PI);
+      }
+      const noise = this.ctx.createBufferSource();
+      noise.buffer = buffer;
+      const noiseGain = this.ctx.createGain();
+      noiseGain.gain.setValueAtTime(0.25, t);
+      noiseGain.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+      noise.connect(noiseGain);
+      noiseGain.connect(this.ctx.destination);
+      noise.start(t);
     } catch {
       // Audio fallback
     }
   }
 
-  // Trophy shimmer: crystal chime
+  // Trophy shimmer: gold crystal chime
   public playTrophy() {
     if (this.getMuted()) return;
     this.initContext();
@@ -138,14 +255,14 @@ class SoundEngine {
         osc.type = 'sine';
         osc.frequency.setValueAtTime(note, t + i * 0.08);
 
-        gain.gain.setValueAtTime(0.2, t + i * 0.08);
-        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.6);
+        gain.gain.setValueAtTime(0.22, t + i * 0.08);
+        gain.gain.exponentialRampToValueAtTime(0.001, t + i * 0.08 + 0.7);
 
         osc.connect(gain);
         gain.connect(this.ctx.destination);
 
         osc.start(t + i * 0.08);
-        osc.stop(t + i * 0.08 + 0.65);
+        osc.stop(t + i * 0.08 + 0.75);
       });
     } catch {
       // Audio fallback
@@ -164,10 +281,10 @@ class SoundEngine {
       const gain = this.ctx.createGain();
 
       osc.type = 'triangle';
-      osc.frequency.setValueAtTime(180, t);
-      osc.frequency.exponentialRampToValueAtTime(520, t + 0.18);
+      osc.frequency.setValueAtTime(220, t);
+      osc.frequency.exponentialRampToValueAtTime(580, t + 0.18);
 
-      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.setValueAtTime(0.18, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.22);
 
       osc.connect(gain);
@@ -180,7 +297,7 @@ class SoundEngine {
     }
   }
 
-  // Achievement unlock fanfare: Victorious 5-note melodic chime
+  // Achievement unlock fanfare
   public playAchievement() {
     if (this.getMuted()) return;
     this.initContext();
@@ -224,10 +341,10 @@ class SoundEngine {
       const gain = this.ctx.createGain();
 
       osc.type = 'sawtooth';
-      osc.frequency.setValueAtTime(60 + index * 15, t);
-      osc.frequency.exponentialRampToValueAtTime(120 + index * 20, t + 0.3);
+      osc.frequency.setValueAtTime(65 + index * 18, t);
+      osc.frequency.exponentialRampToValueAtTime(140 + index * 22, t + 0.35);
 
-      gain.gain.setValueAtTime(0.12, t);
+      gain.gain.setValueAtTime(0.15, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.45);
 
       osc.connect(gain);
@@ -283,7 +400,7 @@ class SoundEngine {
       osc.frequency.setValueAtTime(660, t);
       osc.frequency.exponentialRampToValueAtTime(1320, t + 0.15);
 
-      gain.gain.setValueAtTime(0.15, t);
+      gain.gain.setValueAtTime(0.18, t);
       gain.gain.exponentialRampToValueAtTime(0.001, t + 0.25);
 
       osc.connect(gain);

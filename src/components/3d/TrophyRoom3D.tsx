@@ -12,46 +12,46 @@ export function TrophyRoom3D() {
 
   return (
     <group position={[28, 0, 0]}>
-      {/* Dedicated High-Intensity Trophy Room Spotlights */}
+      {/* High-Intensity Pure White Spotlight */}
       <spotLight
         position={[0, 14, 0]}
         target-position={[0, 2, 0]}
-        intensity={1000}
-        distance={30}
+        intensity={1200}
+        distance={35}
         angle={Math.PI / 2.5}
         penumbra={0.3}
-        color="#fffbeb"
+        color="#FFFFFF"
         castShadow
       />
-      <pointLight position={[0, 6, 0]} intensity={400} color="#ffd700" distance={20} />
+      <pointLight position={[0, 6, 0]} intensity={450} color="#D4AF37" distance={22} />
 
-      {/* Trophy Stage Base Floor */}
+      {/* Black Marble Trophy Stage Floor */}
       <mesh position={[0, 0.2, 0]} receiveShadow>
-        <cylinderGeometry args={[7, 7.5, 0.4, 32]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.2} metalness={0.8} />
+        <cylinderGeometry args={[7.2, 7.6, 0.4, 32]} />
+        <meshStandardMaterial color="#050505" roughness={0.05} metalness={0.95} />
       </mesh>
 
-      {/* Stage Neon Border */}
+      {/* Stage Metallic Gold Border */}
       <mesh position={[0, 0.42, 0]} rotation={[-Math.PI / 2, 0, 0]}>
-        <ringGeometry args={[6.8, 7.2, 32]} />
-        <meshBasicMaterial color="#ffd700" side={THREE.DoubleSide} />
+        <ringGeometry args={[7.0, 7.4, 32]} />
+        <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} />
       </mesh>
 
       {/* Trophy Stage Backdrop Screen */}
       <mesh position={[2.5, 3.5, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <boxGeometry args={[14, 6.5, 0.2]} />
-        <meshStandardMaterial color="#0f172a" roughness={0.3} metalness={0.9} />
+        <meshStandardMaterial color="#0D0D0D" roughness={0.2} metalness={0.9} />
       </mesh>
       <mesh position={[2.38, 3.5, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <planeGeometry args={[13.6, 6.1]} />
-        <meshBasicMaterial color="#1e293b" />
+        <meshBasicMaterial color="#171717" />
       </mesh>
 
       {/* Header Trophy Banner */}
       <group position={[2.2, 6.2, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <mesh>
           <boxGeometry args={[12, 1, 0.2]} />
-          <meshBasicMaterial color="#ffd700" />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
       </group>
 
@@ -88,6 +88,7 @@ function TrophyPlinth({
 }) {
   const trophyRef = useRef<THREE.Group>(null);
   const glowRef = useRef<THREE.Mesh>(null);
+  const particlesRef = useRef<THREE.Points>(null);
 
   // Proximity check to ball
   const worldX = 28 + position[0];
@@ -99,68 +100,71 @@ function TrophyPlinth({
 
   useFrame((_, delta) => {
     if (trophyRef.current) {
-      trophyRef.current.rotation.y += delta * (isNear ? 2.0 : 1.0);
+      trophyRef.current.rotation.y += delta * (isNear ? 2.2 : 1.0);
       trophyRef.current.position.y = 2.4 + Math.sin(Date.now() * 0.002 + index) * 0.12;
     }
     if (glowRef.current) {
       glowRef.current.rotation.z += delta * 0.6;
     }
+    if (particlesRef.current) {
+      particlesRef.current.rotation.y += delta * 0.4;
+    }
   });
 
   return (
     <group position={position}>
-      {/* Illuminated Pedestal Light */}
-      <pointLight color={experience.trophyColor} intensity={150} distance={8} position={[0, 3, 0]} />
+      {/* Illuminated Gold Light */}
+      <pointLight color="#D4AF37" intensity={200} distance={9} position={[0, 3, 0]} />
 
-      {/* Glass Plinth */}
+      {/* Dark Marble Plinth */}
       <mesh position={[0, 1, 0]} castShadow receiveShadow onClick={onSelect}>
         <cylinderGeometry args={[1.1, 1.3, 2, 16]} />
         <meshStandardMaterial
-          color="#334155"
+          color="#171717"
           metalness={0.9}
           roughness={0.1}
           transparent
-          opacity={0.9}
+          opacity={0.95}
         />
       </mesh>
 
-      {/* Plinth Glowing Ring */}
+      {/* Plinth Gold Ring */}
       <mesh position={[0, 2.02, 0]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[0.9, 1.15, 24]} />
-        <meshBasicMaterial color={experience.trophyColor} side={THREE.DoubleSide} />
+        <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} />
       </mesh>
 
-      {/* Rotating 3D Trophy Model */}
+      {/* Rotating 3D Metallic Gold Trophy */}
       <group ref={trophyRef} position={[0, 2.4, 0]} onClick={onSelect}>
-        {/* Trophy Base */}
+        {/* Base */}
         <mesh position={[0, -0.4, 0]} castShadow>
           <cylinderGeometry args={[0.4, 0.5, 0.3, 16]} />
-          <meshStandardMaterial color="#0f172a" metalness={0.95} roughness={0.1} />
+          <meshStandardMaterial color="#050505" metalness={0.95} roughness={0.1} />
         </mesh>
-        {/* Trophy Stem */}
+        {/* Stem */}
         <mesh position={[0, 0, 0]} castShadow>
           <cylinderGeometry args={[0.15, 0.25, 0.6, 16]} />
-          <meshStandardMaterial color="#ffd700" metalness={0.98} roughness={0.08} />
+          <meshStandardMaterial color="#D4AF37" metalness={0.98} roughness={0.06} />
         </mesh>
-        {/* Trophy Cup Body */}
+        {/* Cup Body */}
         <mesh position={[0, 0.5, 0]} castShadow>
           <sphereGeometry args={[0.55, 16, 16, 0, Math.PI * 2, 0, Math.PI * 0.6]} />
-          <meshStandardMaterial color="#ffd700" metalness={0.98} roughness={0.05} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#D4AF37" metalness={0.98} roughness={0.05} side={THREE.DoubleSide} />
         </mesh>
-        {/* Trophy Handles */}
+        {/* Handles */}
         <mesh position={[0.55, 0.5, 0]} rotation={[0, 0, Math.PI / 4]}>
           <torusGeometry args={[0.28, 0.06, 8, 16]} />
-          <meshStandardMaterial color="#ffd700" metalness={0.98} roughness={0.08} />
+          <meshStandardMaterial color="#D4AF37" metalness={0.98} roughness={0.06} />
         </mesh>
         <mesh position={[-0.55, 0.5, 0]} rotation={[0, 0, -Math.PI / 4]}>
           <torusGeometry args={[0.28, 0.06, 8, 16]} />
-          <meshStandardMaterial color="#ffd700" metalness={0.98} roughness={0.08} />
+          <meshStandardMaterial color="#D4AF37" metalness={0.98} roughness={0.06} />
         </mesh>
 
-        {/* Aura particle ring */}
+        {/* Aura Ring */}
         <mesh ref={glowRef} position={[0, 0.5, 0]} rotation={[Math.PI / 2, 0, 0]}>
           <ringGeometry args={[0.7, 0.9, 16]} />
-          <meshBasicMaterial color={experience.trophyColor} transparent opacity={0.5} side={THREE.DoubleSide} />
+          <meshBasicMaterial color="#D4AF37" transparent opacity={0.4} side={THREE.DoubleSide} />
         </mesh>
       </group>
 
@@ -168,11 +172,11 @@ function TrophyPlinth({
       <group position={[0, 3.8, 0]}>
         <mesh>
           <planeGeometry args={[3.2, 0.8]} />
-          <meshBasicMaterial color="#05070a" />
+          <meshBasicMaterial color="#050505" />
         </mesh>
         <mesh position={[0, 0, 0.01]}>
           <planeGeometry args={[3.1, 0.7]} />
-          <meshBasicMaterial color={experience.trophyColor} />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
       </group>
     </group>

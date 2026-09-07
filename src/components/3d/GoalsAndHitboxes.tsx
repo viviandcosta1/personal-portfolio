@@ -13,7 +13,6 @@ export function GoalsAndHitboxes() {
     openProjectModal,
     selectedProject,
     shootAtTarget,
-    cameraZone
   } = usePortfolio();
 
   const hasTriggeredNorth = useRef(false);
@@ -50,11 +49,11 @@ export function GoalsAndHitboxes() {
     if (bz < -35 && bz > -39 && Math.abs(bx) < 4.8 && by < 4.2) {
       if (!hasTriggeredNorth.current) {
         hasTriggeredNorth.current = true;
-        triggerGoal(400);
+        triggerGoal(500);
         if (selectedProject) {
           setTimeout(() => {
             openProjectModal(selectedProject);
-          }, 400);
+          }, 450);
         }
         setTimeout(() => {
           hasTriggeredNorth.current = false;
@@ -77,58 +76,58 @@ export function GoalsAndHitboxes() {
     <group>
       {/* North Goal (Project Training Station & Shootout Ground) */}
       <group position={[0, 0, -36]}>
-        {/* Dedicated Bright Training Floodlights on the Goal */}
+        {/* Bright White Training Floodlights */}
         <spotLight
           position={[0, 14, 8]}
           target-position={[0, 2, 0]}
-          intensity={900}
+          intensity={1000}
           distance={35}
           angle={Math.PI / 3}
           penumbra={0.4}
-          color="#f0fdff"
+          color="#FFFFFF"
           castShadow
         />
-        <pointLight position={[0, 5, 2]} intensity={200} color="#00ff87" distance={15} />
+        <pointLight position={[0, 5, 2]} intensity={250} color="#D4AF37" distance={16} />
 
-        {/* Goal Posts & Frame */}
+        {/* Goal Posts & Frame in Pure White */}
         {/* Left Post */}
         <mesh position={[-goalWidth / 2, goalHeight / 2, 0]} castShadow>
           <cylinderGeometry args={[0.12, 0.12, goalHeight, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} roughness={0.1} />
         </mesh>
         {/* Right Post */}
         <mesh position={[goalWidth / 2, goalHeight / 2, 0]} castShadow>
           <cylinderGeometry args={[0.12, 0.12, goalHeight, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} roughness={0.1} />
         </mesh>
         {/* Crossbar */}
         <mesh position={[0, goalHeight, 0]} rotation={[0, 0, Math.PI / 2]} castShadow>
           <cylinderGeometry args={[0.12, 0.12, goalWidth, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.9} roughness={0.1} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} roughness={0.1} />
         </mesh>
 
         {/* Rear Net Supports */}
         <mesh position={[-goalWidth / 2, goalHeight / 2, -goalDepth / 2]} rotation={[0.4, 0, 0]}>
           <cylinderGeometry args={[0.06, 0.06, goalHeight * 1.2, 8]} />
-          <meshStandardMaterial color="#64748b" metalness={0.6} />
+          <meshStandardMaterial color="#171717" metalness={0.8} />
         </mesh>
         <mesh position={[goalWidth / 2, goalHeight / 2, -goalDepth / 2]} rotation={[0.4, 0, 0]}>
           <cylinderGeometry args={[0.06, 0.06, goalHeight * 1.2, 8]} />
-          <meshStandardMaterial color="#64748b" metalness={0.6} />
+          <meshStandardMaterial color="#171717" metalness={0.8} />
         </mesh>
 
         {/* Goal Net (Translucent White Mesh) */}
         <mesh position={[0, goalHeight / 2, -goalDepth / 2]} rotation={[-0.3, 0, 0]}>
           <planeGeometry args={[goalWidth, goalHeight * 1.3]} />
-          <meshStandardMaterial color="#e2e8f0" wireframe transparent opacity={0.4} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#FFFFFF" wireframe transparent opacity={0.4} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[-goalWidth / 2, goalHeight / 2, -goalDepth / 2]} rotation={[0, Math.PI / 2, 0]}>
           <planeGeometry args={[goalDepth, goalHeight]} />
-          <meshStandardMaterial color="#e2e8f0" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#FFFFFF" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
         <mesh position={[goalWidth / 2, goalHeight / 2, -goalDepth / 2]} rotation={[0, -Math.PI / 2, 0]}>
           <planeGeometry args={[goalDepth, goalHeight]} />
-          <meshStandardMaterial color="#e2e8f0" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#FFFFFF" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
 
         {/* 3 Interactive Project Shootout Targets inside Goal */}
@@ -149,21 +148,21 @@ export function GoalsAndHitboxes() {
           <group ref={ring1Ref}>
             <mesh>
               <ringGeometry args={[0.8, 0.95, 24]} />
-              <meshBasicMaterial color="#00ff87" side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#D4AF37" side={THREE.DoubleSide} />
             </mesh>
             <mesh>
               <circleGeometry args={[0.78, 24]} />
-              <meshBasicMaterial color="#00ff87" transparent opacity={0.25} side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#D4AF37" transparent opacity={0.25} side={THREE.DoubleSide} />
             </mesh>
           </group>
           {/* Target Score Badge */}
           <mesh position={[0, 1.2, 0]}>
             <planeGeometry args={[2.2, 0.5]} />
-            <meshBasicMaterial color="#05070a" />
+            <meshBasicMaterial color="#050505" />
           </mesh>
           <mesh position={[0, 1.2, 0.01]}>
             <planeGeometry args={[2.0, 0.4]} />
-            <meshBasicMaterial color="#00ff87" />
+            <meshBasicMaterial color="#D4AF37" />
           </mesh>
         </group>
 
@@ -184,21 +183,21 @@ export function GoalsAndHitboxes() {
           <group ref={ring2Ref}>
             <mesh>
               <ringGeometry args={[0.8, 0.95, 24]} />
-              <meshBasicMaterial color="#00f0ff" side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#FFFFFF" side={THREE.DoubleSide} />
             </mesh>
             <mesh>
               <circleGeometry args={[0.78, 24]} />
-              <meshBasicMaterial color="#00f0ff" transparent opacity={0.25} side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#FFFFFF" transparent opacity={0.25} side={THREE.DoubleSide} />
             </mesh>
           </group>
           {/* Target Score Badge */}
           <mesh position={[0, 1.2, 0]}>
             <planeGeometry args={[2.2, 0.5]} />
-            <meshBasicMaterial color="#05070a" />
+            <meshBasicMaterial color="#050505" />
           </mesh>
           <mesh position={[0, 1.2, 0.01]}>
             <planeGeometry args={[2.0, 0.4]} />
-            <meshBasicMaterial color="#00f0ff" />
+            <meshBasicMaterial color="#FFFFFF" />
           </mesh>
         </group>
 
@@ -219,21 +218,21 @@ export function GoalsAndHitboxes() {
           <group ref={ring3Ref}>
             <mesh>
               <ringGeometry args={[0.75, 0.9, 24]} />
-              <meshBasicMaterial color="#ffd700" side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#F5C542" side={THREE.DoubleSide} />
             </mesh>
             <mesh>
               <circleGeometry args={[0.73, 24]} />
-              <meshBasicMaterial color="#ffd700" transparent opacity={0.25} side={THREE.DoubleSide} />
+              <meshBasicMaterial color="#F5C542" transparent opacity={0.25} side={THREE.DoubleSide} />
             </mesh>
           </group>
           {/* Target Score Badge */}
           <mesh position={[0, 1.1, 0]}>
             <planeGeometry args={[2.2, 0.5]} />
-            <meshBasicMaterial color="#05070a" />
+            <meshBasicMaterial color="#050505" />
           </mesh>
           <mesh position={[0, 1.1, 0.01]}>
             <planeGeometry args={[2.0, 0.4]} />
-            <meshBasicMaterial color="#ffd700" />
+            <meshBasicMaterial color="#F5C542" />
           </mesh>
         </group>
 
@@ -241,11 +240,11 @@ export function GoalsAndHitboxes() {
         <group ref={keeperRef} position={[0, 1.8, -1.2]}>
           <mesh>
             <boxGeometry args={[1.6, 2.6, 0.2]} />
-            <meshBasicMaterial color="#ff007f" transparent opacity={0.4} />
+            <meshBasicMaterial color="#FFFFFF" transparent opacity={0.3} />
           </mesh>
           <mesh position={[0, 1.6, 0]}>
             <sphereGeometry args={[0.4, 16, 16]} />
-            <meshBasicMaterial color="#ff007f" transparent opacity={0.6} />
+            <meshBasicMaterial color="#D4AF37" transparent opacity={0.5} />
           </mesh>
         </group>
 
@@ -253,11 +252,11 @@ export function GoalsAndHitboxes() {
         <group position={[0, goalHeight + 1.4, 0]}>
           <mesh>
             <boxGeometry args={[11, 1.2, 0.3]} />
-            <meshStandardMaterial color="#05070a" metalness={0.9} roughness={0.2} />
+            <meshStandardMaterial color="#050505" metalness={0.9} roughness={0.2} />
           </mesh>
           <mesh position={[0, 0, 0.18]}>
             <planeGeometry args={[10.6, 0.9]} />
-            <meshBasicMaterial color="#00ff87" />
+            <meshBasicMaterial color="#D4AF37" />
           </mesh>
         </group>
       </group>
@@ -266,19 +265,19 @@ export function GoalsAndHitboxes() {
       <group position={[0, 0, 36]} rotation={[0, Math.PI, 0]}>
         <mesh position={[-goalWidth / 2, goalHeight / 2, 0]}>
           <cylinderGeometry args={[0.12, 0.12, goalHeight, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.8} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} />
         </mesh>
         <mesh position={[goalWidth / 2, goalHeight / 2, 0]}>
           <cylinderGeometry args={[0.12, 0.12, goalHeight, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.8} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} />
         </mesh>
         <mesh position={[0, goalHeight, 0]} rotation={[0, 0, Math.PI / 2]}>
           <cylinderGeometry args={[0.12, 0.12, goalWidth, 16]} />
-          <meshStandardMaterial color="#ffffff" metalness={0.8} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.9} />
         </mesh>
         <mesh position={[0, goalHeight / 2, -goalDepth / 2]} rotation={[-0.3, 0, 0]}>
           <planeGeometry args={[goalWidth, goalHeight * 1.3]} />
-          <meshStandardMaterial color="#e2e8f0" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
+          <meshStandardMaterial color="#FFFFFF" wireframe transparent opacity={0.3} side={THREE.DoubleSide} />
         </mesh>
       </group>
     </group>

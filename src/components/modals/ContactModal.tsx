@@ -35,28 +35,28 @@ export function ContactModal() {
       onClick={(e) => {
         if (e.target === e.currentTarget) closeModal();
       }}
-      className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md p-3 sm:p-6 sm:py-10 flex justify-center items-start min-h-screen"
+      className="fixed inset-0 z-50 overflow-y-auto bg-black/90 backdrop-blur-md p-3 sm:p-6 sm:py-10 flex justify-center items-start min-h-screen text-white"
     >
-      <div className="relative w-full max-w-4xl bg-gradient-to-b from-slate-900 via-slate-950 to-slate-950 border-2 border-[#00ff87]/50 rounded-3xl shadow-[0_0_60px_rgba(0,255,135,0.25)] p-5 sm:p-8 my-auto overflow-hidden">
+      <div className="relative w-full max-w-4xl bg-gradient-to-b from-[#0D0D0D] via-[#050505] to-[#050505] border-2 border-[#D4AF37]/60 rounded-3xl shadow-[0_0_60px_rgba(212,175,55,0.25)] p-5 sm:p-8 my-auto overflow-hidden">
         {/* Sticky Header Bar */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-800">
+        <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#171717]">
           <div className="flex items-center gap-2">
             <button
               onClick={closeModal}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-slate-700 text-xs font-mono font-bold text-slate-200 transition-colors cursor-pointer"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-xl bg-[#0D0D0D] hover:bg-[#171717] border border-[#262626] text-xs font-mono font-bold text-slate-200 transition-colors cursor-pointer"
             >
-              <ArrowLeft className="w-4 h-4 text-[#00ff87]" />
+              <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
               <span>BACK TO STADIUM</span>
             </button>
-            <span className="hidden sm:inline-flex text-xs font-mono font-bold text-[#00ff87] uppercase items-center gap-1.5 px-3 py-1 rounded-full bg-[#00ff87]/15 border border-[#00ff87]/40">
+            <span className="hidden sm:inline-flex text-xs font-mono font-bold text-[#D4AF37] uppercase items-center gap-1.5 px-3 py-1 rounded-full bg-[#D4AF37]/15 border border-[#D4AF37]/40">
               <Sparkles className="w-3.5 h-3.5" />
-              STADIUM EXIT TUNNEL
+              STADIUM PLAYERS TUNNEL (CONTACT)
             </span>
           </div>
 
           <button
             onClick={closeModal}
-            className="text-slate-400 hover:text-white transition-colors cursor-pointer p-2 rounded-xl bg-slate-800/60"
+            className="text-slate-400 hover:text-white transition-colors cursor-pointer p-2 rounded-xl bg-[#171717]"
             title="Close (Esc)"
           >
             <X className="w-5 h-5" />
@@ -68,30 +68,30 @@ export function ContactModal() {
             THE NEXT MATCH STARTS HERE.
           </h2>
           <p className="text-slate-300 font-mono text-sm sm:text-base mt-1">
-            Let&apos;s build high-impact software, AI automation pipelines, or full-stack products together.
+            Let&apos;s build high-impact software systems, AI pipelines, or scalable web platforms together.
           </p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 mt-8 items-start">
           {/* Direct Channels */}
           <div className="lg:col-span-5 flex flex-col gap-4">
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-950 border border-emerald-800 text-[#00ff87] flex items-center justify-center shrink-0">
+            <div className="p-4 rounded-2xl bg-[#0D0D0D] border border-[#262626] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#171717] border border-[#262626] text-[#D4AF37] flex items-center justify-center shrink-0">
                 <Mail className="w-5 h-5" />
               </div>
               <div className="overflow-hidden">
                 <div className="text-[10px] font-mono text-slate-400 uppercase">DIRECT EMAIL</div>
                 <a
                   href={`mailto:${VIVIAN_DATA.personal.email}`}
-                  className="text-xs sm:text-sm font-bold text-white hover:text-[#00ff87] font-mono truncate block"
+                  className="text-xs sm:text-sm font-bold text-white hover:text-[#D4AF37] font-mono truncate block"
                 >
                   {VIVIAN_DATA.personal.email}
                 </a>
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-cyan-950 border border-cyan-800 text-[#00f0ff] flex items-center justify-center shrink-0">
+            <div className="p-4 rounded-2xl bg-[#0D0D0D] border border-[#262626] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#171717] border border-[#262626] text-white flex items-center justify-center shrink-0">
                 <Phone className="w-5 h-5" />
               </div>
               <div>
@@ -102,8 +102,8 @@ export function ContactModal() {
               </div>
             </div>
 
-            <div className="p-4 rounded-2xl bg-slate-900/90 border border-slate-800 flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-slate-800 text-[#ffd700] flex items-center justify-center shrink-0">
+            <div className="p-4 rounded-2xl bg-[#0D0D0D] border border-[#262626] flex items-center gap-3">
+              <div className="w-10 h-10 rounded-xl bg-[#171717] border border-[#262626] text-[#D4AF37] flex items-center justify-center shrink-0">
                 <MapPin className="w-5 h-5" />
               </div>
               <div>
@@ -120,41 +120,41 @@ export function ContactModal() {
                 href={VIVIAN_DATA.personal.linkedin}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-[#0077b5]/20 hover:bg-[#0077b5]/30 border border-[#0077b5]/60 text-white font-mono text-xs font-bold uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-[#171717] hover:bg-[#262626] border border-[#262626] text-white font-mono text-xs font-bold uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <LinkedinIcon className="w-4 h-4 text-[#00a0dc]" />
+                <LinkedinIcon className="w-4 h-4 text-[#D4AF37]" />
                 <span>LINKEDIN</span>
               </a>
               <a
                 href={VIVIAN_DATA.personal.github}
                 target="_blank"
                 rel="noreferrer"
-                className="flex-1 py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 border border-slate-700 text-white font-mono text-xs font-bold uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                className="flex-1 py-3 px-4 rounded-xl bg-[#171717] hover:bg-[#262626] border border-[#262626] text-white font-mono text-xs font-bold uppercase transition-colors flex items-center justify-center gap-2 cursor-pointer"
               >
-                <GithubIcon className="w-4 h-4" />
+                <GithubIcon className="w-4 h-4 text-white" />
                 <span>GITHUB</span>
               </a>
             </div>
           </div>
 
           {/* Contact Form */}
-          <div className="lg:col-span-7 p-6 rounded-2xl bg-slate-900/90 border border-slate-800">
+          <div className="lg:col-span-7 p-6 rounded-2xl bg-[#0D0D0D] border border-[#262626]">
             {submitted ? (
               <div className="py-12 text-center flex flex-col items-center gap-4">
-                <div className="w-16 h-16 rounded-full bg-emerald-950 border-2 border-[#00ff87] text-[#00ff87] flex items-center justify-center">
+                <div className="w-16 h-16 rounded-full bg-[#171717] border-2 border-[#D4AF37] text-[#D4AF37] flex items-center justify-center">
                   <CheckCircle2 className="w-8 h-8" />
                 </div>
                 <h3 className="text-xl font-bold text-white font-sans uppercase">
                   MESSAGE TRANSMITTED!
                 </h3>
                 <p className="text-xs font-mono text-slate-400 max-w-sm">
-                  Thank you for reaching out. Vivian will review your message and respond directly via email.
+                  Thank you for reaching out. Vivian will review your message and respond directly.
                 </p>
                 <a
                   href={`mailto:${VIVIAN_DATA.personal.email}?subject=${encodeURIComponent(formData.subject || 'Portfolio Inquiry')}&body=${encodeURIComponent(formData.message)}`}
-                  className="mt-2 text-xs font-mono text-[#00ff87] underline"
+                  className="mt-2 text-xs font-mono text-[#D4AF37] underline"
                 >
-                  Or click here to send directly via mail client
+                  Or click here to open your default mail client
                 </a>
               </div>
             ) : (
@@ -169,8 +169,8 @@ export function ContactModal() {
                       required
                       value={formData.name}
                       onChange={e => setFormData({ ...formData, name: e.target.value })}
-                      placeholder="e.g. Hiring Manager"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:outline-none focus:border-[#00ff87]"
+                      placeholder="e.g. Hiring Lead"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#050505] border border-[#262626] text-white text-xs font-mono focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                   <div>
@@ -183,7 +183,7 @@ export function ContactModal() {
                       value={formData.email}
                       onChange={e => setFormData({ ...formData, email: e.target.value })}
                       placeholder="e.g. manager@company.com"
-                      className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:outline-none focus:border-[#00ff87]"
+                      className="w-full px-3.5 py-2.5 rounded-xl bg-[#050505] border border-[#262626] text-white text-xs font-mono focus:outline-none focus:border-[#D4AF37]"
                     />
                   </div>
                 </div>
@@ -198,13 +198,13 @@ export function ContactModal() {
                     value={formData.subject}
                     onChange={e => setFormData({ ...formData, subject: e.target.value })}
                     placeholder="e.g. Full-Stack Role / AI Project Collaboration"
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:outline-none focus:border-[#00ff87]"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#050505] border border-[#262626] text-white text-xs font-mono focus:outline-none focus:border-[#D4AF37]"
                   />
                 </div>
 
                 <div>
                   <label className="text-[10px] font-mono text-slate-400 block mb-1">
-                    MESSAGE / SCOUTING BRIEF
+                    MESSAGE / BRIEF
                   </label>
                   <textarea
                     rows={4}
@@ -212,13 +212,13 @@ export function ContactModal() {
                     value={formData.message}
                     onChange={e => setFormData({ ...formData, message: e.target.value })}
                     placeholder="Describe your vision, technical requirements, or team..."
-                    className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-white text-xs font-mono focus:outline-none focus:border-[#00ff87] resize-none"
+                    className="w-full px-3.5 py-2.5 rounded-xl bg-[#050505] border border-[#262626] text-white text-xs font-mono focus:outline-none focus:border-[#D4AF37] resize-none"
                   />
                 </div>
 
                 <button
                   type="submit"
-                  className="w-full py-3.5 rounded-xl bg-[#00ff87] hover:bg-[#00ff87]/90 text-slate-950 font-black text-xs sm:text-sm font-mono tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg shadow-[#00ff87]/20"
+                  className="w-full py-3.5 rounded-xl bg-white hover:bg-slate-100 text-[#050505] font-black text-xs sm:text-sm font-mono tracking-wider uppercase transition-all flex items-center justify-center gap-2 cursor-pointer shadow-lg hover:shadow-[0_0_25px_rgba(255,255,255,0.4)]"
                 >
                   <Send className="w-4 h-4 fill-current" />
                   <span>TRANSMIT MESSAGE</span>
@@ -229,12 +229,12 @@ export function ContactModal() {
         </div>
 
         {/* Bottom Back Button */}
-        <div className="mt-8 pt-6 border-t border-slate-800 flex justify-center">
+        <div className="mt-8 pt-6 border-t border-[#171717] flex justify-center">
           <button
             onClick={closeModal}
-            className="px-6 py-3 rounded-xl bg-slate-900 hover:bg-slate-800 text-white font-mono text-xs font-bold border border-slate-700 transition-colors flex items-center gap-2 cursor-pointer"
+            className="px-6 py-3 rounded-xl bg-[#0D0D0D] hover:bg-[#171717] text-white font-mono text-xs font-bold border border-[#262626] transition-colors flex items-center gap-2 cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4 text-[#00ff87]" />
+            <ArrowLeft className="w-4 h-4 text-[#D4AF37]" />
             <span>RETURN TO 3D STADIUM ARENA</span>
           </button>
         </div>

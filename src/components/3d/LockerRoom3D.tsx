@@ -3,55 +3,55 @@
 import React, { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { usePortfolio } from '@/context/PortfolioContext';
-import { VIVIAN_DATA, SkillCategory } from '@/data/portfolioData';
+import { VIVIAN_DATA, LockerItem } from '@/data/portfolioData';
 import * as THREE from 'three';
 
 export function LockerRoom3D() {
-  const { openLockerModal, ballPosition } = usePortfolio();
-  const lockers = VIVIAN_DATA.lockers;
+  const { openTechLockerModal, ballPosition } = usePortfolio();
+  const lockers = VIVIAN_DATA.techLockers;
 
   return (
     <group position={[-28, 0, 0]} rotation={[0, Math.PI / 2, 0]}>
-      {/* Dedicated High-Intensity Locker Room Spotlights */}
+      {/* High-Intensity White Spotlight */}
       <spotLight
-        position={[0, 14, 4]}
+        position={[0, 15, 4]}
         target-position={[0, 2.5, 0]}
-        intensity={1000}
-        distance={30}
+        intensity={1200}
+        distance={35}
         angle={Math.PI / 2.5}
         penumbra={0.3}
-        color="#e0f2fe"
+        color="#FFFFFF"
         castShadow
       />
-      <pointLight position={[0, 6, 2]} intensity={350} color="#00ff87" distance={20} />
+      <pointLight position={[0, 6, 2]} intensity={400} color="#D4AF37" distance={22} />
 
       {/* Locker Bay Floor Platform */}
       <mesh position={[0, 0.2, 0]} receiveShadow>
-        <boxGeometry args={[20, 0.4, 6]} />
-        <meshStandardMaterial color="#1e293b" roughness={0.4} metalness={0.8} />
+        <boxGeometry args={[38, 0.4, 6]} />
+        <meshStandardMaterial color="#0D0D0D" roughness={0.3} metalness={0.8} />
       </mesh>
 
       {/* Locker Bay Back Wall */}
       <mesh position={[0, 3.2, -2.5]}>
-        <boxGeometry args={[20, 6, 0.4]} />
-        <meshStandardMaterial color="#0f172a" roughness={0.6} />
+        <boxGeometry args={[38, 6, 0.4]} />
+        <meshStandardMaterial color="#050505" roughness={0.6} />
       </mesh>
 
-      {/* Header Neon Sign */}
+      {/* Header Neon Sign with Mentality Quote */}
       <mesh position={[0, 6.4, -2.2]}>
-        <boxGeometry args={[16, 1.0, 0.2]} />
-        <meshBasicMaterial color="#00ff87" />
+        <boxGeometry args={[32, 1.0, 0.2]} />
+        <meshBasicMaterial color="#FFFFFF" />
       </mesh>
 
-      {/* 5 Lockers */}
+      {/* 10 Numbered Lockers (07 to 16) */}
       {lockers.map((locker, idx) => {
-        const xPos = (idx - 2) * 3.6;
+        const xPos = (idx - 4.5) * 3.5;
         return (
           <LockerUnit
-            key={locker.id}
+            key={locker.number}
             locker={locker}
             position={[xPos, 0.4, 0]}
-            onSelect={() => openLockerModal(locker)}
+            onSelect={() => openTechLockerModal(locker)}
             ballPosition={ballPosition}
           />
         );
@@ -66,7 +66,7 @@ function LockerUnit({
   onSelect,
   ballPosition,
 }: {
-  locker: SkillCategory;
+  locker: LockerItem;
   position: [number, number, number];
   onSelect: () => void;
   ballPosition: [number, number, number];
@@ -100,37 +100,40 @@ function LockerUnit({
   return (
     <group position={position} onClick={onSelect}>
       {/* Individual Locker Light */}
-      <pointLight color="#00f0ff" intensity={60} distance={6} position={[0, 3, 1]} />
+      <pointLight color="#D4AF37" intensity={80} distance={6} position={[0, 3, 1]} />
 
       {/* Locker Frame Outer Box */}
       <mesh position={[0, 2.5, 0]} castShadow receiveShadow>
         <boxGeometry args={[3, 5, 2.2]} />
-        <meshStandardMaterial color="#334155" metalness={0.8} roughness={0.2} />
+        <meshStandardMaterial color="#171717" metalness={0.9} roughness={0.2} />
       </mesh>
 
       {/* Locker Interior Cavity */}
       <mesh position={[0, 2.5, 0.1]}>
         <boxGeometry args={[2.7, 4.7, 2]} />
-        <meshStandardMaterial color="#0b1329" roughness={0.8} />
+        <meshStandardMaterial color="#050505" roughness={0.8} />
       </mesh>
 
-      {/* Futuristic Floating Jersey inside Locker */}
+      {/* Futuristic Floating White & Gold Football Jersey */}
       <group ref={jerseyRef} position={[0, 2.8, 0]}>
+        {/* Main Torso (Pure White) */}
         <mesh castShadow>
           <boxGeometry args={[1.4, 1.8, 0.2]} />
-          <meshStandardMaterial color="#00ff87" metalness={0.4} roughness={0.3} />
+          <meshStandardMaterial color="#FFFFFF" metalness={0.3} roughness={0.4} />
         </mesh>
+        {/* Sleeves (Gold Trim) */}
         <mesh position={[-0.85, 0.4, 0]} rotation={[0, 0, -0.4]}>
           <boxGeometry args={[0.5, 0.6, 0.18]} />
-          <meshStandardMaterial color="#00f0ff" />
+          <meshStandardMaterial color="#D4AF37" metalness={0.7} />
         </mesh>
         <mesh position={[0.85, 0.4, 0]} rotation={[0, 0, 0.4]}>
           <boxGeometry args={[0.5, 0.6, 0.18]} />
-          <meshStandardMaterial color="#00f0ff" />
+          <meshStandardMaterial color="#D4AF37" metalness={0.7} />
         </mesh>
+        {/* Number Badge on Chest */}
         <mesh position={[0, 0.1, 0.11]}>
           <planeGeometry args={[0.8, 0.8]} />
-          <meshBasicMaterial color="#ffffff" />
+          <meshBasicMaterial color="#050505" />
         </mesh>
       </group>
 
@@ -138,28 +141,31 @@ function LockerUnit({
       <group ref={doorRef} position={[-1.4, 2.5, 1.1]}>
         <mesh position={[1.4, 0, 0]} castShadow>
           <boxGeometry args={[2.8, 4.8, 0.1]} />
-          <meshStandardMaterial color="#475569" metalness={0.8} roughness={0.2} />
+          <meshStandardMaterial color="#262626" metalness={0.9} roughness={0.2} />
         </mesh>
+        {/* Vents */}
         {[1.2, 0.8, 0.4].map((vy, vi) => (
           <mesh key={`vent-${vi}`} position={[1.4, vy, 0.06]}>
             <boxGeometry args={[1.8, 0.08, 0.04]} />
-            <meshBasicMaterial color="#0f172a" />
+            <meshBasicMaterial color="#050505" />
           </mesh>
         ))}
+        {/* Number Badge on Exterior */}
         <mesh position={[1.4, 1.8, 0.08]}>
           <planeGeometry args={[1, 0.6]} />
-          <meshBasicMaterial color="#00ff87" />
+          <meshBasicMaterial color="#D4AF37" />
         </mesh>
+        {/* Gold Handle */}
         <mesh position={[2.4, 0, 0.12]}>
           <cylinderGeometry args={[0.04, 0.04, 0.6]} />
-          <meshStandardMaterial color="#ffd700" metalness={0.9} />
+          <meshStandardMaterial color="#D4AF37" metalness={0.95} />
         </mesh>
       </group>
 
       {/* Floor Neon Marker */}
       <mesh position={[0, 0.02, 1.6]} rotation={[-Math.PI / 2, 0, 0]}>
         <ringGeometry args={[1.0, 1.25, 16]} />
-        <meshBasicMaterial color={isOpen ? '#00ff87' : '#38bdf8'} side={THREE.DoubleSide} />
+        <meshBasicMaterial color={isOpen ? '#FFFFFF' : '#D4AF37'} side={THREE.DoubleSide} />
       </mesh>
     </group>
   );

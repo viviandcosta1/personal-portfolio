@@ -9,7 +9,6 @@ import * as THREE from 'three';
 export function Jumbotron3D() {
   const { goalsScored } = usePortfolio();
   const jumbotronRef = useRef<THREE.Group>(null);
-  const scoreboard = VIVIAN_DATA.scoreboard;
 
   // Scoreboard Canvas Texture
   const screenTexture = useMemo(() => {
@@ -21,54 +20,54 @@ export function Jumbotron3D() {
     if (!ctx) return null;
 
     // Dark cyber backdrop
-    ctx.fillStyle = '#06090e';
+    ctx.fillStyle = '#050505';
     ctx.fillRect(0, 0, 1024, 512);
 
-    // Cyan top header
-    ctx.fillStyle = '#00f0ff';
-    ctx.font = 'bold 30px monospace';
-    ctx.fillText('⚽ UEFA CHAMPIONS LEAGUE • DEVELOPER FINAL ⚽', 120, 50);
+    // Gold top header
+    ctx.fillStyle = '#D4AF37';
+    ctx.font = 'bold 28px monospace';
+    ctx.fillText('👑 CHAMPIONS LEAGUE • DEVELOPER ARENA 👑', 160, 50);
 
     // Score Board
-    ctx.fillStyle = '#0f172a';
+    ctx.fillStyle = '#0D0D0D';
     ctx.fillRect(40, 80, 944, 220);
-    ctx.strokeStyle = '#00ff87';
+    ctx.strokeStyle = '#D4AF37';
     ctx.lineWidth = 4;
     ctx.strokeRect(40, 80, 944, 220);
 
     // Home Team: VIVIAN
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 44px sans-serif';
-    ctx.fillText('VIVIAN DCOSTA', 80, 160);
-    ctx.fillStyle = '#00ff87';
+    ctx.fillText('VIVIAN D\'COSTA', 80, 160);
+    ctx.fillStyle = '#D4AF37';
     ctx.font = 'bold 80px monospace';
     ctx.fillText(`${99 + goalsScored}`, 400, 240);
 
     // Separator
-    ctx.fillStyle = '#64748b';
+    ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 50px monospace';
     ctx.fillText(':', 500, 235);
 
     // Away Team: BUGS
-    ctx.fillStyle = '#ff4d4d';
+    ctx.fillStyle = '#64748B';
     ctx.font = 'bold 80px monospace';
     ctx.fillText('0', 570, 240);
-    ctx.fillStyle = '#94a3b8';
+    ctx.fillStyle = '#A1A1AA';
     ctx.font = 'bold 36px sans-serif';
-    ctx.fillText('BUGS / CRASHES', 650, 160);
+    ctx.fillText('BUGS / EXCUSES', 650, 160);
 
     // Match minute
-    ctx.fillStyle = '#ffd700';
-    ctx.font = 'bold 32px monospace';
+    ctx.fillStyle = '#F5C542';
+    ctx.font = 'bold 30px monospace';
     ctx.fillText('TIME: 90+5\' (EXTRA TIME)', 340, 290);
 
-    // Ticker banner
-    ctx.fillStyle = '#00ff87';
+    // Ticker banner with Mentality Quotes
+    ctx.fillStyle = '#FFFFFF';
     ctx.fillRect(40, 320, 944, 150);
-    ctx.fillStyle = '#06090e';
-    ctx.font = 'bold 32px monospace';
-    ctx.fillText('🌟 EDUCATION: B.E. CSE (CGPA 8.4) • AWS CERTIFIED 🌟', 60, 370);
-    ctx.fillText('🚀 DAYLINK TECH LABS • BITS AI/ML • NEXEL 🚀', 120, 425);
+    ctx.fillStyle = '#050505';
+    ctx.font = 'bold 30px monospace';
+    ctx.fillText('⚡ DISCIPLINE BUILDS CONSISTENCY • WORK. IMPROVE. REPEAT ⚡', 60, 370);
+    ctx.fillText('🏆 B.E. CSE (CGPA 8.4) • DAYLINK TECH LABS • BITS AI/ML 🏆', 70, 425);
 
     const texture = new THREE.CanvasTexture(canvas);
     return texture;
@@ -91,7 +90,7 @@ export function Jumbotron3D() {
       ].map(([cx, cy, cz], idx) => (
         <mesh key={`cable-${idx}`} position={[cx / 2, cy / 2, cz / 2]}>
           <cylinderGeometry args={[0.04, 0.04, 8]} />
-          <meshStandardMaterial color="#475569" metalness={0.9} />
+          <meshStandardMaterial color="#262626" metalness={0.9} />
         </mesh>
       ))}
 
@@ -100,7 +99,7 @@ export function Jumbotron3D() {
         {/* Core Frame */}
         <mesh>
           <octahedronGeometry args={[5, 0]} />
-          <meshStandardMaterial color="#0f172a" metalness={0.8} roughness={0.3} />
+          <meshStandardMaterial color="#050505" metalness={0.9} roughness={0.2} />
         </mesh>
 
         {/* 4 Large Display Screens */}
@@ -126,7 +125,7 @@ export function Jumbotron3D() {
         </mesh>
 
         {/* Underbody Stadium Downlight */}
-        <pointLight color="#00ff87" intensity={150} distance={25} position={[0, -2.5, 0]} />
+        <pointLight color="#D4AF37" intensity={180} distance={25} position={[0, -2.5, 0]} />
       </group>
     </group>
   );

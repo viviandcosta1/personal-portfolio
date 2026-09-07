@@ -1,13 +1,12 @@
 'use client';
 
-import React, { useRef, useState, useEffect } from 'react';
-import { usePortfolio } from '@/context/PortfolioContext';
-import { Zap, Play, RotateCcw } from 'lucide-react';
+import React, { useRef, useState, useCallback, useEffect } from 'react';
+import { Play, RotateCcw, Zap } from 'lucide-react';
 
 interface MobileControlsProps {
   onJoystickChange: (x: number, y: number) => void;
   onKick: () => void;
-  onSprint: (active: boolean) => void;
+  onSprint: (sprinting: boolean) => void;
   onReset: () => void;
 }
 
@@ -17,135 +16,105 @@ export function MobileControls({
   onSprint,
   onReset,
 }: MobileControlsProps) {
-  const { hasEnteredStadium } = usePortfolio();
-  const [isSprintActive, setIsSprintActive] = useState(false);
-
-  // Virtual Joystick Touch Handling
   const joystickBaseRef = useRef<HTMLDivElement>(null);
   const [knobPos, setKnobPos] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
-  const touchIdRef = useRef<number | null>(null);
+  const [isSprinting, setIsSprinting] = useState(false);
 
-  if (!hasEnteredStadium) return null;
+  const maxRadius = 40;
 
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (touchIdRef.current !== null) return;
-    const touch = e.changedTouches[0];
-    touchIdRef.current = touch.identifier;
-    setIsDragging(true);
-    updateJoystick(touch.clientX, touch.clientY);
-  };
+  const handleTouchMove = useCallback(
+    (e: TouchEvent) => {
+      if (!isDragging || !joystickBaseRef.current) return;
+      const touch = e.touches[0];
+      const rect = joystickBaseRef.current.getBoundingClientRect();
+      const centerX = rect.left + rect.width / 2;
+      const centerY = rect.top + rect.height / 2;
 
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (!isDragging) return;
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      if (touch.identifier === touchIdRef.current) {
-        updateJoystick(touch.clientX, touch.clientY);
-        break;
+      let dx = touch.clientX - centerX;
+      let dy = touch.clientY - centerY;
+      const distance = Math.sqrt(dx * dx + dy * dy);
+
+      if (distance > maxRadius) {
+        dx = (dx / distance) * maxRadius;
+        dy = (dy / distance) * maxRadius;
       }
+
+      setKnobPos({ x: dx, y: dy });
+      onJoystickChange(dx / maxRadius, dy / maxRadius);
+    },
+    [isDragging, maxRadius, onJoystickChange]
+  );
+
+  const handleTouchEnd = useCallback(() => {
+    setIsDragging(false);
+    setKnobPos({ x: 0, y: 0 });
+    onJoystickChange(0, 0);
+  }, [onJoystickChange]);
+
+  useEffect(() => {
+    if (isDragging) {
+      window.addEventListener('touchmove', handleTouchMove, { passive: false });
+      window.addEventListener('touchend', handleTouchEnd);
+      window.addEventListener('touchcancel', handleTouchEnd);
     }
-  };
-
-  const handleTouchEnd = (e: React.TouchEvent) => {
-    for (let i = 0; i < e.changedTouches.length; i++) {
-      const touch = e.changedTouches[i];
-      if (touch.identifier === touchIdRef.current) {
-        touchIdRef.current = null;
-        setIsDragging(false);
-        setKnobPos({ x: 0, y: 0 });
-        onJoystickChange(0, 0);
-        break;
-      }
-    }
-  };
-
-  const updateJoystick = (clientX: number, clientY: number) => {
-    if (!joystickBaseRef.current) return;
-    const rect = joystickBaseRef.current.getBoundingClientRect();
-    const centerX = rect.left + rect.width / 2;
-    const centerY = rect.top + rect.height / 2;
-
-    const dx = clientX - centerX;
-    const dy = clientY - centerY;
-    const maxRadius = rect.width / 2;
-
-    const dist = Math.sqrt(dx * dx + dy * dy);
-    const angle = Math.atan2(dy, dx);
-    const clampedDist = Math.min(dist, maxRadius);
-
-    const knobX = clampedDist * Math.cos(angle);
-    const knobY = clampedDist * Math.sin(angle);
-
-    setKnobPos({ x: knobX, y: knobY });
-    onJoystickChange(knobX / maxRadius, knobY / maxRadius);
-  };
+    return () => {
+      window.removeEventListener('touchmove', handleTouchMove);
+      window.removeEventListener('touchend', handleTouchEnd);
+      window.removeEventListener('touchcancel', handleTouchEnd);
+    };
+  }, [isDragging, handleTouchMove, handleTouchEnd]);
 
   const toggleSprint = () => {
-    const next = !isSprintActive;
-    setIsSprintActive(next);
+    const next = !isSprinting;
+    setIsSprinting(next);
     onSprint(next);
   };
 
   return (
-    <div className="fixed bottom-4 left-4 right-4 z-20 pointer-events-none flex items-end justify-between sm:hidden">
-      {/* Virtual Analog Joystick (Left Thumb) */}
+    <div className="fixed bottom-4 left-4 right-4 z-30 pointer-events-none flex md:hidden items-end justify-between select-none">
+      {/* Virtual Joystick */}
       <div
         ref={joystickBaseRef}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
-        className="pointer-events-auto relative w-28 h-28 rounded-full bg-slate-900/80 backdrop-blur-md border-2 border-slate-700/80 flex items-center justify-center touch-none shadow-2xl"
+        onTouchStart={() => setIsDragging(true)}
+        className="pointer-events-auto w-28 h-28 rounded-full bg-[#0D0D0D]/80 backdrop-blur-md border border-[#262626] flex items-center justify-center relative touch-none shadow-2xl"
       >
-        {/* Joystick Base Crosshairs */}
-        <div className="absolute inset-0 flex items-center justify-center opacity-30">
-          <div className="w-full h-px bg-slate-400" />
-          <div className="h-full w-px bg-slate-400 absolute" />
-        </div>
-
-        {/* Joystick Thumb Knob */}
         <div
-          className="w-12 h-12 rounded-full bg-gradient-to-br from-[#00ff87] to-[#00f0ff] shadow-lg flex items-center justify-center transition-transform duration-75 pointer-events-none"
+          className="w-12 h-12 rounded-full bg-white border border-[#D4AF37] shadow-md transition-transform duration-75"
           style={{
             transform: `translate(${knobPos.x}px, ${knobPos.y}px)`,
           }}
-        >
-          <div className="w-4 h-4 rounded-full bg-slate-950/60" />
-        </div>
+        />
       </div>
 
-      {/* Action Buttons (Right Thumb) */}
-      <div className="pointer-events-auto flex flex-col gap-2 items-end">
-        {/* Reset Ball Position */}
+      {/* Action Buttons: Kick, Sprint, Reset */}
+      <div className="pointer-events-auto flex items-center gap-2">
         <button
           onClick={onReset}
-          className="w-10 h-10 rounded-full bg-slate-900/90 border border-slate-700 text-slate-300 flex items-center justify-center shadow-lg active:scale-90 transition-transform cursor-pointer"
-          title="Reset Ball"
+          className="w-11 h-11 rounded-full bg-[#0D0D0D]/90 backdrop-blur-md border border-[#262626] text-slate-300 active:scale-95 flex items-center justify-center shadow-xl cursor-pointer"
+          title="Reset Football to Center"
         >
-          <RotateCcw className="w-4 h-4" />
+          <RotateCcw className="w-4 h-4 text-[#D4AF37]" />
         </button>
 
-        {/* Sprint Toggle */}
         <button
           onClick={toggleSprint}
-          className={`px-4 py-2 rounded-xl font-mono text-xs font-black tracking-wider flex items-center gap-1.5 shadow-lg active:scale-95 transition-all cursor-pointer ${
-            isSprintActive
-              ? 'bg-[#00f0ff] text-slate-950 border-2 border-white'
-              : 'bg-slate-900/90 text-[#00f0ff] border border-cyan-800'
+          className={`w-12 h-12 rounded-full backdrop-blur-md border flex items-center justify-center active:scale-95 shadow-xl transition-all cursor-pointer ${
+            isSprinting
+              ? 'bg-white text-[#050505] border-white shadow-[0_0_15px_rgba(255,255,255,0.4)]'
+              : 'bg-[#0D0D0D]/90 text-slate-300 border-[#262626]'
           }`}
+          title="Sprint Toggle"
         >
-          <Zap className="w-3.5 h-3.5 fill-current" />
-          <span>{isSprintActive ? 'SPRINT ON' : 'SPRINT'}</span>
+          <Zap className="w-5 h-5" />
         </button>
 
-        {/* Kick Button */}
         <button
           onClick={onKick}
-          className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-[#00ff87] to-emerald-400 text-slate-950 font-black text-sm tracking-wider flex flex-col items-center justify-center shadow-xl shadow-[#00ff87]/30 active:scale-90 transition-transform cursor-pointer"
+          className="w-14 h-14 rounded-full bg-white text-[#050505] font-black text-sm active:scale-90 flex items-center justify-center shadow-[0_0_20px_rgba(255,255,255,0.4)] transition-transform cursor-pointer"
+          title="Kick Football"
         >
-          <Play className="w-5 h-5 fill-current rotate-[-90deg]" />
-          <span>KICK</span>
+          <Play className="w-6 h-6 fill-current translate-x-0.5" />
         </button>
       </div>
     </div>

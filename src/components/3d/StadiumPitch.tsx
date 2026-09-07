@@ -5,7 +5,6 @@ import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 
 export function StadiumPitch() {
-  const ledTickerRef = useRef<THREE.Mesh>(null);
   const tickerOffset = useRef(0);
 
   // Pitch dimensions (scale: 1 unit ~ 2 meters)
@@ -21,24 +20,24 @@ export function StadiumPitch() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    // Grass alternating stripes
+    // Grass alternating stripes - Madrid night contrast
     const numStripes = 18;
     const stripeHeight = canvas.height / numStripes;
     for (let i = 0; i < numStripes; i++) {
-      ctx.fillStyle = i % 2 === 0 ? '#0d381e' : '#092b16';
+      ctx.fillStyle = i % 2 === 0 ? '#0B2917' : '#081F12';
       ctx.fillRect(0, i * stripeHeight, canvas.width, stripeHeight);
     }
 
-    // Subtle grass texture noise
-    ctx.fillStyle = 'rgba(0, 255, 120, 0.03)';
-    for (let i = 0; i < 2000; i++) {
+    // Subtle turf noise
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.02)';
+    for (let i = 0; i < 3000; i++) {
       const x = Math.random() * canvas.width;
       const y = Math.random() * canvas.height;
-      ctx.fillRect(x, y, 4, 4);
+      ctx.fillRect(x, y, 3, 3);
     }
 
-    // Line markings
-    ctx.strokeStyle = 'rgba(255, 255, 255, 0.9)';
+    // Line markings - Crisp Pure White
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
     ctx.lineWidth = 14;
 
     const marginX = 140;
@@ -62,7 +61,7 @@ export function StadiumPitch() {
     ctx.stroke();
 
     // Center spot
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = '#FFFFFF';
     ctx.beginPath();
     ctx.arc(canvas.width / 2, midY, 18, 0, Math.PI * 2);
     ctx.fill();
@@ -108,7 +107,7 @@ export function StadiumPitch() {
     return texture;
   }, []);
 
-  // LED Advertising Boards Canvas Texture
+  // LED Advertising Boards Canvas Texture with Mentality Quotes
   const ledTexture = useMemo(() => {
     if (typeof window === 'undefined') return null;
     const canvas = document.createElement('canvas');
@@ -117,13 +116,18 @@ export function StadiumPitch() {
     const ctx = canvas.getContext('2d');
     if (!ctx) return null;
 
-    ctx.fillStyle = '#05070a';
+    ctx.fillStyle = '#050505';
     ctx.fillRect(0, 0, canvas.width, canvas.height);
 
-    ctx.fillStyle = '#00ff87';
-    ctx.font = 'bold 36px monospace';
-    const text = '⚡ VIVIAN DCOSTA ⚡ SOFTWARE DEVELOPER ⚡ FULL STACK & AI/ML ⚡ REACT • NODE.JS • PYTHON • AWS ⚡ CHAMPIONS LEAGUE 2026 ⚡';
-    ctx.fillText(text, 20, 80);
+    ctx.fillStyle = '#FFFFFF';
+    ctx.font = 'bold 30px monospace';
+    const text = '👑 VIVIAN D\'COSTA 👑 DISCIPLINE BUILDS CONSISTENCY 👑 WORK. IMPROVE. REPEAT 👑 THE NEXT LEVEL IS BUILT 👑 STAY HUNGRY 👑 PRECISION OVER EXCUSES 👑 PLAY TO WIN 👑 KEEP MOVING FORWARD 👑';
+    ctx.fillText(text, 20, 75);
+
+    // Gold borders on LED
+    ctx.strokeStyle = '#D4AF37';
+    ctx.lineWidth = 4;
+    ctx.strokeRect(4, 4, canvas.width - 8, canvas.height - 8);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;
@@ -135,7 +139,7 @@ export function StadiumPitch() {
   // Animate LED ticker
   useFrame((_, delta) => {
     if (ledTexture) {
-      tickerOffset.current += delta * 0.15;
+      tickerOffset.current += delta * 0.12;
       ledTexture.offset.x = tickerOffset.current;
     }
   });
@@ -147,51 +151,51 @@ export function StadiumPitch() {
         <planeGeometry args={[pitchWidth, pitchLength]} />
         <meshStandardMaterial
           map={pitchTexture || undefined}
-          color={pitchTexture ? '#ffffff' : '#0d381e'}
-          roughness={0.85}
-          metalness={0.1}
+          color={pitchTexture ? '#FFFFFF' : '#0B2917'}
+          roughness={0.8}
+          metalness={0.05}
         />
       </mesh>
 
-      {/* Surrounding Track / Asphalt border */}
+      {/* Surrounding Track / Deep Charcoal border */}
       <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.05, 0]} receiveShadow>
         <planeGeometry args={[pitchWidth + 16, pitchLength + 16]} />
-        <meshStandardMaterial color="#080b0f" roughness={0.9} metalness={0.2} />
+        <meshStandardMaterial color="#0D0D0D" roughness={0.9} metalness={0.2} />
       </mesh>
 
       {/* Perimeter LED Advertising Boards */}
       {/* East Board */}
       <mesh position={[pitchWidth / 2 + 0.5, 0.6, 0]} rotation={[0, -Math.PI / 2, 0]}>
         <boxGeometry args={[pitchLength, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
       {/* West Board */}
       <mesh position={[-pitchWidth / 2 - 0.5, 0.6, 0]} rotation={[0, Math.PI / 2, 0]}>
         <boxGeometry args={[pitchLength, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
       {/* North Board (Left segment) */}
       <mesh position={[-pitchWidth / 4 - 3, 0.6, -pitchLength / 2 - 0.5]}>
         <boxGeometry args={[pitchWidth / 2 - 6, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
       {/* North Board (Right segment) */}
       <mesh position={[pitchWidth / 4 + 3, 0.6, -pitchLength / 2 - 0.5]}>
         <boxGeometry args={[pitchWidth / 2 - 6, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
       {/* South Board (Left segment) */}
       <mesh position={[-pitchWidth / 4 - 3, 0.6, pitchLength / 2 + 0.5]}>
         <boxGeometry args={[pitchWidth / 2 - 6, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
       {/* South Board (Right segment) */}
       <mesh position={[pitchWidth / 4 + 3, 0.6, pitchLength / 2 + 0.5]}>
         <boxGeometry args={[pitchWidth / 2 - 6, 1.2, 0.2]} />
-        <meshBasicMaterial map={ledTexture || undefined} color="#ffffff" />
+        <meshBasicMaterial map={ledTexture || undefined} color="#FFFFFF" />
       </mesh>
 
-      {/* Corner Flags */}
+      {/* Corner Flags with Gold Poles & White Flags */}
       {[
         [-pitchWidth / 2 + 1, -pitchLength / 2 + 1],
         [pitchWidth / 2 - 1, -pitchLength / 2 + 1],
@@ -199,15 +203,15 @@ export function StadiumPitch() {
         [pitchWidth / 2 - 1, pitchLength / 2 - 1],
       ].map(([fx, fz], idx) => (
         <group key={`corner-flag-${idx}`} position={[fx, 0, fz]}>
-          {/* Flagpole */}
+          {/* Gold Flagpole */}
           <mesh position={[0, 1.2, 0]}>
             <cylinderGeometry args={[0.04, 0.04, 2.4]} />
-            <meshStandardMaterial color="#ffd700" metalness={0.8} roughness={0.2} />
+            <meshStandardMaterial color="#D4AF37" metalness={0.95} roughness={0.1} />
           </mesh>
-          {/* Flag Cloth */}
+          {/* White Flag Cloth */}
           <mesh position={[0.3, 2.1, 0]}>
             <boxGeometry args={[0.6, 0.4, 0.02]} />
-            <meshStandardMaterial color="#00ff87" emissive="#00ff87" emissiveIntensity={0.3} />
+            <meshStandardMaterial color="#FFFFFF" roughness={0.4} />
           </mesh>
         </group>
       ))}

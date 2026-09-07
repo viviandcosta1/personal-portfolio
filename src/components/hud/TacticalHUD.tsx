@@ -14,7 +14,9 @@ import {
   Zap,
   Target,
   Layers,
-  Cpu
+  Cpu,
+  Sparkles,
+  Compass
 } from 'lucide-react';
 
 export function TacticalHUD() {
@@ -24,15 +26,17 @@ export function TacticalHUD() {
     focusZone,
     openModal,
     openExperienceModal,
-    openLockerModal,
     selectedExperience,
-    selectedLocker,
     isMuted,
     toggleSound,
     toggleMiniMap,
     toggleTerminal,
     unlockedAchievements,
     goalsScored,
+    isTrainingModeActive,
+    toggleTrainingMode,
+    startOutroCinematic,
+    triggerMentalityMode,
   } = usePortfolio();
 
   if (!hasEnteredStadium) return null;
@@ -44,7 +48,7 @@ export function TacticalHUD() {
 
   const handleSkillsClick = () => {
     focusZone('lockers');
-    openLockerModal(selectedLocker || VIVIAN_DATA.lockers[0]);
+    openModal('skills');
   };
 
   const handleTacticsClick = () => {
@@ -53,40 +57,40 @@ export function TacticalHUD() {
   };
 
   return (
-    <header className="fixed top-0 left-0 right-0 z-30 p-3 sm:p-5 pointer-events-none flex flex-col gap-2">
+    <header className="fixed top-0 left-0 right-0 z-30 p-3 sm:p-5 pointer-events-none flex flex-col gap-2 select-none">
       {/* Top Main Broadcast Banner */}
       <div className="flex items-center justify-between gap-2 max-w-7xl mx-auto w-full">
         {/* Left: Player ID & Score */}
-        <div className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-slate-900/90 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-2.5 rounded-xl border border-slate-800 shadow-xl">
+        <div className="pointer-events-auto flex items-center gap-2 sm:gap-3 bg-[#0D0D0D]/95 backdrop-blur-md px-3 py-2 sm:px-4 sm:py-2.5 rounded-2xl border border-[#262626] shadow-2xl">
           <button
             onClick={() => openModal('profile')}
-            className="flex items-center gap-2 group cursor-pointer"
+            className="flex items-center gap-2.5 group cursor-pointer"
           >
-            <div className="w-8 h-8 rounded-lg bg-gradient-to-br from-[#00ff87] to-[#00f0ff] p-0.5 flex items-center justify-center font-black text-slate-950 text-xs">
-              10
+            <div className="w-8 h-8 rounded-xl bg-white p-0.5 flex items-center justify-center font-black text-[#050505] text-xs font-mono group-hover:scale-105 transition-transform">
+              #07
             </div>
             <div className="text-left">
-              <div className="text-xs sm:text-sm font-black text-white tracking-wider uppercase group-hover:text-[#00ff87] transition-colors">
-                VIVIAN DCOSTA
+              <div className="text-xs sm:text-sm font-black text-white tracking-wider uppercase group-hover:text-[#D4AF37] transition-colors font-sans">
+                VIVIAN D&apos;COSTA
               </div>
-              <div className="text-[10px] font-mono text-slate-400">
-                SOFTWARE & AI/ML DEV
+              <div className="text-[10px] font-mono text-[#D4AF37] font-semibold">
+                SOFTWARE DEVELOPER
               </div>
             </div>
           </button>
 
-          <div className="h-6 w-px bg-slate-800 hidden sm:block" />
+          <div className="h-6 w-px bg-[#262626] hidden sm:block" />
 
-          {/* Live Match Score Indicator */}
+          {/* Goals Scored Tracker */}
           <div className="hidden sm:flex items-center gap-2 font-mono text-xs">
-            <span className="px-2 py-0.5 rounded bg-emerald-950/80 text-[#00ff87] border border-emerald-800/60 font-bold">
-              GOALS: {goalsScored}
+            <span className="px-2.5 py-0.5 rounded-lg bg-[#171717] text-white border border-[#262626] font-bold">
+              GOALS: <span className="text-[#D4AF37]">{goalsScored}</span>
             </span>
           </div>
         </div>
 
         {/* Center: Sector Navigation Fast-Travel (Desktop & Tablet) */}
-        <nav className="pointer-events-auto hidden md:flex items-center gap-1 bg-slate-900/90 backdrop-blur-md p-1.5 rounded-xl border border-slate-800 shadow-xl">
+        <nav className="pointer-events-auto hidden md:flex items-center gap-1 bg-[#0D0D0D]/95 backdrop-blur-md p-1.5 rounded-2xl border border-[#262626] shadow-2xl">
           <NavButton
             active={cameraZone === 'pitch'}
             onClick={() => focusZone('pitch')}
@@ -103,48 +107,81 @@ export function TacticalHUD() {
             active={cameraZone === 'trophies'}
             onClick={handleExperienceClick}
             icon={<Trophy className="w-3.5 h-3.5" />}
-            label="EXPERIENCE"
+            label="TROPHIES"
           />
           <NavButton
             active={cameraZone === 'lockers'}
             onClick={handleSkillsClick}
             icon={<Layers className="w-3.5 h-3.5" />}
-            label="SKILLS"
+            label="LOCKERS"
           />
           <NavButton
             active={cameraZone === 'tactical'}
             onClick={handleTacticsClick}
             icon={<Cpu className="w-3.5 h-3.5" />}
-            label="AI / TACTICS"
+            label="FORMATION"
           />
         </nav>
 
         {/* Right: Tools & Utilities */}
         <div className="pointer-events-auto flex items-center gap-1.5 sm:gap-2">
-          {/* Achievements Trigger */}
+          {/* Training Mode Toggle */}
+          <button
+            onClick={toggleTrainingMode}
+            className={`flex items-center gap-1.5 px-3 py-2 rounded-xl backdrop-blur-md border text-xs font-mono font-bold transition-all cursor-pointer shadow-xl ${
+              isTrainingModeActive
+                ? 'bg-white text-[#050505] border-white shadow-[0_0_15px_rgba(255,255,255,0.4)]'
+                : 'bg-[#0D0D0D]/95 border-[#262626] text-slate-300 hover:text-white hover:border-[#D4AF37]'
+            }`}
+            title="Toggle Training Mode Objectives"
+          >
+            <Compass className="w-4 h-4" />
+            <span className="hidden lg:inline">TRAINING</span>
+          </button>
+
+          {/* Mentality Easter Egg Trigger */}
+          <button
+            onClick={triggerMentalityMode}
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-[#D4AF37] hover:border-[#D4AF37] hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
+            title="Activate Mentality Mode #07"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-[#D4AF37]" />
+            <span className="font-bold">#07</span>
+          </button>
+
+          {/* Achievements Shelf */}
           <button
             onClick={() => openModal('achievements')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs font-mono text-amber-400 hover:border-amber-400/50 hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-white hover:border-[#D4AF37] hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
             title="Achievements Shelf"
           >
-            <Trophy className="w-4 h-4 text-amber-400" />
-            <span className="font-bold">{unlockedAchievements.length}/7</span>
+            <Trophy className="w-4 h-4 text-[#D4AF37]" />
+            <span className="font-bold">{unlockedAchievements.length}/8</span>
+          </button>
+
+          {/* Outro Cinematic */}
+          <button
+            onClick={startOutroCinematic}
+            className="hidden sm:flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-slate-300 hover:text-white hover:border-white transition-all cursor-pointer shadow-xl"
+            title="The Match is Never Over (Outro)"
+          >
+            <span>OUTRO</span>
           </button>
 
           {/* Resume Modal */}
           <button
             onClick={() => openModal('resume')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs font-mono text-[#00f0ff] hover:border-[#00f0ff]/50 hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
+            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-white hover:border-white hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
             title="Scouting Resume"
           >
-            <FileText className="w-4 h-4 text-[#00f0ff]" />
+            <FileText className="w-4 h-4 text-[#D4AF37]" />
             <span className="hidden sm:inline font-bold">RESUME</span>
           </button>
 
           {/* Contact Tunnel */}
           <button
             onClick={() => openModal('contact')}
-            className="flex items-center gap-1.5 px-3 py-2 rounded-xl bg-[#00ff87] text-[#040609] font-black text-xs font-mono tracking-wider uppercase hover:bg-[#00ff87]/90 transition-all cursor-pointer shadow-xl shadow-[#00ff87]/20"
+            className="flex items-center gap-1.5 px-3.5 py-2 rounded-xl bg-white hover:bg-slate-100 text-[#050505] font-black text-xs font-mono tracking-wider uppercase transition-all cursor-pointer shadow-xl hover:shadow-[0_0_20px_rgba(255,255,255,0.4)]"
             title="Contact Tunnel"
           >
             <Send className="w-3.5 h-3.5 fill-current" />
@@ -154,44 +191,50 @@ export function TacticalHUD() {
           {/* Terminal Console */}
           <button
             onClick={toggleTerminal}
-            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs font-mono text-emerald-400 hover:border-emerald-400/50 hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
+            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-white hover:border-white hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
             title="Terminal Console"
           >
-            <Terminal className="w-4 h-4" />
+            <Terminal className="w-4 h-4 text-[#D4AF37]" />
           </button>
 
           {/* Mini-Map Toggle */}
           <button
             onClick={toggleMiniMap}
-            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs font-mono text-slate-300 hover:border-slate-600 hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
+            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-slate-300 hover:border-slate-500 hover:bg-[#171717] transition-all cursor-pointer shadow-xl"
             title="Tactical Radar Map (M)"
           >
-            <MapIcon className="w-4 h-4 text-[#00ff87]" />
+            <MapIcon className="w-4 h-4 text-white" />
           </button>
 
-          {/* Sound Toggle */}
+          {/* Sound Toggle (Clearly indicates Sound ON / Sound OFF) */}
           <button
             onClick={toggleSound}
-            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-slate-900/90 backdrop-blur-md border border-slate-800 text-xs font-mono text-slate-300 hover:border-slate-600 hover:bg-slate-800 transition-all cursor-pointer shadow-xl"
-            title={isMuted ? 'Unmute Stadium Audio' : 'Mute Stadium Audio'}
+            className="p-2 sm:px-3 sm:py-2 rounded-xl bg-[#0D0D0D]/95 backdrop-blur-md border border-[#262626] text-xs font-mono text-slate-300 hover:border-slate-500 hover:bg-[#171717] transition-all cursor-pointer shadow-xl flex items-center gap-1.5"
+            title={isMuted ? 'Turn Sound ON' : 'Turn Sound OFF'}
           >
             {isMuted ? (
-              <VolumeX className="w-4 h-4 text-rose-400" />
+              <>
+                <VolumeX className="w-4 h-4 text-slate-400" />
+                <span className="hidden lg:inline text-[10px] text-slate-400">SOUND OFF</span>
+              </>
             ) : (
-              <Volume2 className="w-4 h-4 text-[#00ff87]" />
+              <>
+                <Volume2 className="w-4 h-4 text-[#D4AF37]" />
+                <span className="hidden lg:inline text-[10px] text-[#D4AF37]">SOUND ON</span>
+              </>
             )}
           </button>
         </div>
       </div>
 
       {/* Mobile Quick Navigation Bar */}
-      <div className="pointer-events-auto flex md:hidden items-center justify-center gap-1 bg-slate-900/95 backdrop-blur-md p-1 rounded-xl border border-slate-800 shadow-xl max-w-sm mx-auto overflow-x-auto w-full">
+      <div className="pointer-events-auto flex md:hidden items-center justify-center gap-1 bg-[#0D0D0D]/95 backdrop-blur-md p-1.5 rounded-2xl border border-[#262626] shadow-xl max-w-sm mx-auto overflow-x-auto w-full">
         <NavButton active={cameraZone === 'pitch'} onClick={() => focusZone('pitch')} label="PITCH" />
         <NavButton active={cameraZone === 'goals'} onClick={() => focusZone('goals')} label="PROJECTS" />
-        <NavButton active={cameraZone === 'trophies'} onClick={handleExperienceClick} label="EXP" />
-        <NavButton active={cameraZone === 'lockers'} onClick={handleSkillsClick} label="SKILLS" />
-        <NavButton active={cameraZone === 'tactical'} onClick={handleTacticsClick} label="AI" />
-        <NavButton active={false} onClick={() => openModal('profile')} label="BIO" />
+        <NavButton active={cameraZone === 'trophies'} onClick={handleExperienceClick} label="TROPHIES" />
+        <NavButton active={cameraZone === 'lockers'} onClick={handleSkillsClick} label="LOCKERS" />
+        <NavButton active={cameraZone === 'tactical'} onClick={handleTacticsClick} label="TACTICS" />
+        <NavButton active={false} onClick={() => openModal('profile')} label="CARD" />
       </div>
     </header>
   );
@@ -211,10 +254,10 @@ function NavButton({
   return (
     <button
       onClick={onClick}
-      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono font-bold tracking-wider transition-all duration-200 cursor-pointer ${
+      className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-mono font-bold tracking-wider transition-all duration-200 cursor-pointer ${
         active
-          ? 'bg-[#00ff87] text-[#040609] shadow-[0_0_12px_rgba(0,255,135,0.4)]'
-          : 'text-slate-400 hover:text-white hover:bg-slate-800/80'
+          ? 'bg-white text-[#050505] shadow-[0_0_12px_rgba(255,255,255,0.4)]'
+          : 'text-slate-400 hover:text-white hover:bg-[#171717]'
       }`}
     >
       {icon}
