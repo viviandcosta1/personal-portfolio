@@ -1,79 +1,69 @@
 import type { Metadata, Viewport } from 'next';
-import { Inter, Chakra_Petch } from 'next/font/google';
+import { Fraunces, Manrope } from 'next/font/google';
 import './globals.css';
 
-const inter = Inter({
+const fraunces = Fraunces({
+  subsets: ['latin'],
+  variable: '--font-serif',
+  display: 'swap',
+});
+
+const manrope = Manrope({
   subsets: ['latin'],
   variable: '--font-sans',
   display: 'swap',
 });
 
-const chakraPetch = Chakra_Petch({
-  weight: ['400', '600', '700'],
-  subsets: ['latin'],
-  variable: '--font-mono',
-  display: 'swap',
-});
-
 export const metadata: Metadata = {
-  title: 'Vivian Dcosta — Software Developer | AI/ML & Full-Stack Developer',
+  title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
   description:
-    'Portfolio of Vivian Dcosta, Software Developer and AI/ML Developer building modern web applications, AI-powered solutions, automation workflows and full-stack products.',
+    "Personal portfolio of Vivian D'costa. Software developer building web applications, AI-powered systems, and automation experiences with discipline and precision.",
   keywords: [
     'Vivian Dcosta',
+    'Vivian D\'costa',
     'Software Developer',
     'AI/ML Developer',
-    'Full-Stack Developer',
+    'Full Stack Developer',
     'React.js',
-    'Node.js',
+    'Next.js',
     'Python',
     'FastAPI',
+    'Node.js',
     'MongoDB',
     'AWS',
     'Portfolio',
-    'Football Game Portfolio',
-    'Three.js Portfolio',
   ],
-  authors: [{ name: 'Vivian Dcosta', url: 'https://viviandcosta.dev' }],
-  creator: 'Vivian Dcosta',
+  authors: [{ name: "Vivian D'costa", url: 'https://viviandcosta.dev' }],
+  creator: "Vivian D'costa",
   metadataBase: new URL('https://viviandcosta.dev'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: 'Vivian Dcosta — Software Developer | AI/ML & Full-Stack Developer',
+    title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
     description:
-      'Immersive 3D Football Stadium Developer Portfolio of Vivian Dcosta. Explore full-stack applications, AI/ML pipelines, and software engineering.',
+      "Explore the work of Vivian D'costa — software engineer crafting high-performance web systems, AI pipelines, and full-stack solutions.",
     url: 'https://viviandcosta.dev',
-    siteName: 'Vivian Dcosta Portfolio Arena',
+    siteName: "Vivian D'costa Portfolio",
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'Vivian Dcosta — Software Developer | AI/ML & Full-Stack Developer',
+    title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
     description:
-      'Immersive 3D Football Stadium Developer Portfolio of Vivian Dcosta.',
+      "Software developer building web applications, AI-powered systems, and scalable full-stack products.",
   },
   robots: {
     index: true,
     follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      'max-video-preview': -1,
-      'max-image-preview': 'large',
-      'max-snippet': -1,
-    },
   },
 };
 
 export const viewport: Viewport = {
-  themeColor: '#040609',
+  themeColor: '#F7F3EC',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({
@@ -84,8 +74,8 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: 'Vivian Dcosta',
-    jobTitle: 'Software Developer & AI/ML Developer',
+    name: "Vivian D'costa",
+    jobTitle: 'Software Developer & AI/ML Engineer',
     url: 'https://viviandcosta.dev',
     sameAs: [
       'https://github.com/vivian-dcosta',
@@ -99,26 +89,27 @@ export default function RootLayout({
     },
     alumniOf: 'Srinivas University Institute of Technology',
     knowsAbout: [
-      'Full-Stack Development',
-      'Machine Learning',
+      'Full-Stack Web Development',
+      'AI & Machine Learning',
+      'Python',
+      'FastAPI',
       'React.js',
       'Node.js',
-      'FastAPI',
-      'Python',
       'MongoDB',
-      'AWS',
+      'MySQL',
+      'AWS Cloud',
     ],
   };
 
   return (
-    <html lang="en" className={`${inter.variable} ${chakraPetch.variable}`}>
+    <html lang="en" className={`${fraunces.variable} ${manrope.variable} scroll-smooth`}>
       <head>
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }}
         />
       </head>
-      <body className="antialiased bg-[#040609] text-white font-sans selection:bg-[#00ff87] selection:text-black">
+      <body className="antialiased bg-[#F7F3EC] text-[#2B211B] font-sans selection:bg-[#B89452] selection:text-[#FFFDF9] min-h-screen flex flex-col">
         {children}
       </body>
     </html>

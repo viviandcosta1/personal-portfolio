@@ -2,87 +2,173 @@
 
 @layer base {
   :root {
-    --color-pure-white: #FFFFFF;
-    --color-deep-black: #050505;
-    --color-charcoal: #0D0D0D;
-    --color-metallic-gold: #D4AF37;
-    --color-warm-gold: #F5C542;
-    --color-dark-silver: #171717;
-    --color-subtle-silver: #262626;
+    --bg-warm: #F7F3EC;
+    --bg-secondary: #EFE8DD;
+    --bg-card: #FFFDF9;
+    --text-primary: #2B211B;
+    --text-secondary: #75685C;
+    --text-brown: #6B4F3A;
+    --text-dark-brown: #38291F;
+    --accent-gold: #B89452;
+    --accent-gold-hover: #9c7b3e;
+    --accent-gold-subtle: rgba(184, 148, 82, 0.12);
+    --border-warm: #DED3C5;
+    --border-subtle: #EBE3D8;
+    --font-serif: var(--font-serif), 'Fraunces', Georgia, serif;
+    --font-sans: var(--font-sans), 'Manrope', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
   }
 
   body {
-    background-color: #050505;
-    color: #FFFFFF;
-    overflow: hidden;
-    user-select: none;
+    background-color: var(--bg-warm);
+    color: var(--text-primary);
+    font-family: var(--font-sans);
     -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+    overflow-x: hidden;
   }
 
-  /* Custom Slim Sleek Scrollbar */
+  /* Custom Slim Warm Luxury Scrollbar */
   ::-webkit-scrollbar {
     width: 6px;
     height: 6px;
   }
 
   ::-webkit-scrollbar-track {
-    background: #0D0D0D;
+    background: #F7F3EC;
   }
 
   ::-webkit-scrollbar-thumb {
-    background: #171717;
+    background: #D8CCC0;
     border-radius: 9999px;
   }
 
   ::-webkit-scrollbar-thumb:hover {
-    background: #D4AF37;
+    background: #B89452;
   }
 }
 
-/* Metallic Gold Shimmer & Sweep Animation */
-@keyframes goldShimmer {
+/* Typography Helpers */
+.font-display {
+  font-family: var(--font-serif);
+}
+
+.font-body {
+  font-family: var(--font-sans);
+}
+
+/* Subtle Warm Grid / Texture Backgrounds */
+.warm-grid-bg {
+  background-image: 
+    linear-gradient(to right, rgba(107, 79, 58, 0.04) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(107, 79, 58, 0.04) 1px, transparent 1px);
+  background-size: 36px 36px;
+}
+
+.warm-dots-bg {
+  background-image: radial-gradient(rgba(107, 79, 58, 0.08) 1px, transparent 1px);
+  background-size: 20px 20px;
+}
+
+/* Luxury Editorial Card Styles */
+.luxury-card {
+  background: #FFFDF9;
+  border: 1px solid #DED3C5;
+  transition: transform 300ms cubic-bezier(0.16, 1, 0.3, 1), box-shadow 300ms cubic-bezier(0.16, 1, 0.3, 1), border-color 300ms ease;
+}
+
+.luxury-card:hover {
+  transform: translateY(-4px);
+  border-color: #B89452;
+  box-shadow: 0 16px 35px -10px rgba(56, 41, 31, 0.07);
+}
+
+/* Button Micro-Interactions */
+.luxury-btn-primary {
+  background-color: #38291F;
+  color: #FFFDF9;
+  border: 1px solid #38291F;
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-btn-primary:hover {
+  background-color: #B89452;
+  border-color: #B89452;
+  color: #FFFDF9;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px -6px rgba(184, 148, 82, 0.35);
+}
+
+.luxury-btn-secondary {
+  background-color: transparent;
+  color: #38291F;
+  border: 1px solid #6B4F3A;
+  transition: all 250ms cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.luxury-btn-secondary:hover {
+  background-color: #38291F;
+  border-color: #38291F;
+  color: #FFFDF9;
+  transform: translateY(-2px);
+}
+
+/* Vision Glasses Scanning Line Animation */
+@keyframes visionScan {
   0% {
-    background-position: -200% 0;
+    top: -20%;
+    opacity: 0;
+  }
+  20% {
+    opacity: 0.8;
+  }
+  80% {
+    opacity: 0.8;
   }
   100% {
-    background-position: 200% 0;
+    top: 120%;
+    opacity: 0;
   }
 }
 
-.gold-sweep {
-  background: linear-gradient(
-    90deg,
-    transparent 0%,
-    rgba(212, 175, 55, 0.25) 50%,
-    transparent 100%
-  );
-  background-size: 200% 100%;
-  animation: goldShimmer 3.5s infinite;
+.vision-scan-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  height: 2px;
+  background: linear-gradient(90deg, transparent 0%, rgba(184, 148, 82, 0.9) 50%, transparent 100%);
+  box-shadow: 0 0 12px rgba(184, 148, 82, 0.8);
+  animation: visionScan 3.5s ease-in-out infinite;
 }
 
-.gold-border-glow {
-  box-shadow: 0 0 25px rgba(212, 175, 55, 0.25), inset 0 0 15px rgba(212, 175, 55, 0.1);
+/* Rotating Stamp Text Animation */
+@keyframes spinSlow {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
-.white-stadium-glow {
-  box-shadow: 0 0 35px rgba(255, 255, 255, 0.2);
+.spin-slow {
+  animation: spinSlow 24s linear infinite;
 }
 
-/* Stadium scanlines */
-.stadium-scanlines {
-  background: linear-gradient(
-    rgba(13, 13, 13, 0) 50%, 
-    rgba(5, 5, 5, 0.4) 50%
-  ), linear-gradient(
-    90deg,
-    rgba(255, 255, 255, 0.02),
-    rgba(212, 175, 55, 0.01),
-    rgba(255, 255, 255, 0.02)
-  );
-  background-size: 100% 4px, 8px 100%;
+/* Floating Technology Node Animation */
+@keyframes techFloat1 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(4px, -6px); }
 }
 
-/* Perspective 3D Card tilt container */
-.perspective-1000 {
-  perspective: 1000px;
+@keyframes techFloat2 {
+  0%, 100% { transform: translate(0, 0); }
+  50% { transform: translate(-5px, 5px); }
+}
+
+.tech-float-1 {
+  animation: techFloat1 6s ease-in-out infinite;
+}
+
+.tech-float-2 {
+  animation: techFloat2 7s ease-in-out infinite;
 }

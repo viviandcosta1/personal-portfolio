@@ -1,110 +1,52 @@
 'use client';
 
-import React from 'react';
-import { PortfolioProvider } from '@/context/PortfolioContext';
-import { useControls } from '@/hooks/useControls';
-import { StadiumCanvas } from '@/components/3d/StadiumCanvas';
-import { HeroOverlay } from '@/components/hud/HeroOverlay';
-import { TacticalHUD } from '@/components/hud/TacticalHUD';
-import { MiniMap } from '@/components/hud/MiniMap';
-import { MobileControls } from '@/components/hud/MobileControls';
-import { AchievementBanner } from '@/components/hud/AchievementBanner';
-import { MentalityModeOverlay } from '@/components/hud/MentalityModeOverlay';
-import { TrainingModeHUD } from '@/components/hud/TrainingModeHUD';
-import { GoalUnlockedBanner } from '@/components/hud/GoalUnlockedBanner';
-import { OutroCinematic } from '@/components/hud/OutroCinematic';
-import { TerminalModal } from '@/components/hud/TerminalModal';
-import { CustomCursor } from '@/components/hud/CustomCursor';
-import { SectionChapterCard } from '@/components/hud/SectionChapterCard';
-import { AtmosphereControls } from '@/components/hud/AtmosphereControls';
-import { ProjectShootoutGame } from '@/components/game/ProjectShootoutGame';
-import { PlayerProfileModal } from '@/components/modals/PlayerProfileModal';
-import { ProjectModal } from '@/components/modals/ProjectModal';
-import { ExperienceModal } from '@/components/modals/ExperienceModal';
-import { SkillsModal } from '@/components/modals/SkillsModal';
-import { TacticalRoomModal } from '@/components/modals/TacticalRoomModal';
-import { ResumeModal } from '@/components/modals/ResumeModal';
-import { ContactModal } from '@/components/modals/ContactModal';
-import { AchievementsModal } from '@/components/modals/AchievementsModal';
-
-function StadiumExperience() {
-  const {
-    controlsRef,
-    setJoystick,
-    triggerMobileKick,
-    triggerMobileSprint,
-    triggerMobileReset,
-  } = useControls();
-
-  return (
-    <main className="relative w-screen h-screen overflow-hidden bg-[#050505] select-none touch-none">
-      {/* Dynamic Custom Cursor */}
-      <CustomCursor />
-
-      {/* 3D Physics Stadium Canvas */}
-      <StadiumCanvas controlsRef={controlsRef} />
-
-      {/* Sports Documentary Section Chapter Titles */}
-      <SectionChapterCard />
-
-      {/* Opening Cinematic Football Tunnel Hero Overlay */}
-      <HeroOverlay />
-
-      {/* Broadcast HUD */}
-      <TacticalHUD />
-
-      {/* Quick Atmosphere Toggles (Day/Night, Weather, Match Day) */}
-      <AtmosphereControls />
-
-      {/* Goal Scoring Banner */}
-      <GoalUnlockedBanner />
-
-      {/* Number 7 Mentality Mode Cinematic Overlay */}
-      <MentalityModeOverlay />
-
-      {/* Interactive Training Mode HUD */}
-      <TrainingModeHUD />
-
-      {/* Outro Cinematic */}
-      <OutroCinematic />
-
-      {/* Arcade Target Shootout Mode for Projects */}
-      <ProjectShootoutGame />
-
-      {/* Tactical Radar Mini-Map */}
-      <MiniMap />
-
-      {/* Mobile Virtual Joystick & Touch Controls */}
-      <MobileControls
-        onJoystickChange={setJoystick}
-        onKick={triggerMobileKick}
-        onSprint={triggerMobileSprint}
-        onReset={triggerMobileReset}
-      />
-
-      {/* Achievement Pop-up Banner */}
-      <AchievementBanner />
-
-      {/* Interactive Developer Terminal Console */}
-      <TerminalModal />
-
-      {/* Section Feature Modals */}
-      <PlayerProfileModal />
-      <ProjectModal />
-      <ExperienceModal />
-      <SkillsModal />
-      <TacticalRoomModal />
-      <ResumeModal />
-      <ContactModal />
-      <AchievementsModal />
-    </main>
-  );
-}
+import React, { useState } from 'react';
+import { CustomCursor } from '@/components/layout/CustomCursor';
+import { Navbar } from '@/components/layout/Navbar';
+import { HeroSection } from '@/components/sections/HeroSection';
+import { AboutSection } from '@/components/sections/AboutSection';
+import { ExperienceSection } from '@/components/sections/ExperienceSection';
+import { ProjectsSection } from '@/components/sections/ProjectsSection';
+import { SkillsSection } from '@/components/sections/SkillsSection';
+import { MindsetSection } from '@/components/sections/MindsetSection';
+import { AchievementsSection } from '@/components/sections/AchievementsSection';
+import { ResumeSection } from '@/components/sections/ResumeSection';
+import { ContactSection } from '@/components/sections/ContactSection';
+import { Footer } from '@/components/layout/Footer';
+import { ResumeDetailModal } from '@/components/modals/ResumeDetailModal';
 
 export default function Home() {
+  const [resumeOpen, setResumeOpen] = useState(false);
+
   return (
-    <PortfolioProvider>
-      <StadiumExperience />
-    </PortfolioProvider>
+    <div className="min-h-screen bg-[#F7F3EC] text-[#2B211B] flex flex-col selection:bg-[#B89452] selection:text-[#FFFDF9]">
+      {/* Subtle Desktop Custom Cursor */}
+      <CustomCursor />
+
+      {/* Top Floating Navigation */}
+      <Navbar onOpenResume={() => setResumeOpen(true)} />
+
+      {/* Main Content Sections */}
+      <main className="flex-1 flex flex-col">
+        <HeroSection onOpenResume={() => setResumeOpen(true)} />
+        <AboutSection />
+        <ExperienceSection />
+        <ProjectsSection />
+        <SkillsSection />
+        <MindsetSection />
+        <AchievementsSection />
+        <ResumeSection onOpenResume={() => setResumeOpen(true)} />
+        <ContactSection />
+      </main>
+
+      {/* Footer */}
+      <Footer />
+
+      {/* Full Resume Detail & Print PDF Modal */}
+      <ResumeDetailModal
+        isOpen={resumeOpen}
+        onClose={() => setResumeOpen(false)}
+      />
+    </div>
   );
 }
