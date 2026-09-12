@@ -20,7 +20,7 @@ export function ResumeDetailModal({ isOpen, onClose }: ResumeDetailModalProps) {
       printWindow.document.write(`
         <html>
           <head>
-            <title>Vivian D'costa - Resume</title>
+            <title>Vivian Dcosta - Resume</title>
             <style>
               body { font-family: 'Helvetica Neue', Arial, sans-serif; line-height: 1.5; color: #2B211B; padding: 40px; }
               h1 { margin: 0; font-size: 28px; text-transform: uppercase; color: #2B211B; }
@@ -33,7 +33,7 @@ export function ResumeDetailModal({ isOpen, onClose }: ResumeDetailModalProps) {
             </style>
           </head>
           <body>
-            <h1>Vivian D'costa</h1>
+            <h1>Vivian Dcosta</h1>
             <p class="header-info">Software Developer | AI/ML & Full-Stack Engineer<br/>Belagavi, Karnataka, India | dcostavivian08@gmail.com | +91 6360209255 | github.com/vivian-dcosta</p>
             
             <h2>Education</h2>
@@ -130,7 +130,7 @@ export function ResumeDetailModal({ isOpen, onClose }: ResumeDetailModalProps) {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div>
                   <h1 className="font-display font-black text-3xl sm:text-4xl text-[#2B211B] uppercase tracking-tight">
-                    VIVIAN D&apos;COSTA
+                    VIVIAN DCOSTA
                   </h1>
                   <p className="text-sm font-bold font-mono text-[#B89452] uppercase mt-1">
                     SOFTWARE DEVELOPER · FULL STACK · AI/ML

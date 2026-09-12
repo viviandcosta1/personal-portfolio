@@ -61,7 +61,7 @@ export interface SkillCategory {
 
 export const VIVIAN_DATA = {
   personal: {
-    name: "Vivian D'costa",
+    name: "Vivian Dcosta",
     tagline: "Software Developer • Full-Stack • AI/ML",
     subtitle: "From the Stadium to the Code Editor: Building high-performance web systems, AI pipelines, and scalable software architectures.",
     heroQuotes: [
@@ -84,7 +84,7 @@ export const VIVIAN_DATA = {
   },
 
   scoutingReport: {
-    player: "VIVIAN D'COSTA",
+    player: "VIVIAN DCOSTA",
     position: "SOFTWARE DEVELOPER",
     role: "FULL-STACK • AI/ML",
     foot: "RIGHT",
@@ -565,7 +565,7 @@ export const VIVIAN_DATA = {
 
   scoreboard: {
     match: "CHAMPIONS LEAGUE: DEVELOPER FINAL",
-    teamHome: "VIVIAN D'COSTA",
+    teamHome: "VIVIAN DCOSTA",
     scoreHome: 99,
     teamAway: "BUGS & COMPLEXITY",
     scoreAway: 0,

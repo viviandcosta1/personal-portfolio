@@ -18,7 +18,7 @@ export function Footer() {
           <div className="flex items-center gap-2 mb-1">
             <span className="w-2.5 h-2.5 rounded-full bg-[#B89452]"></span>
             <span className="font-display font-black text-lg tracking-tight uppercase">
-              VIVIAN D&apos;COSTA
+              VIVIAN DCOSTA
             </span>
             <span className="text-[10px] font-mono text-[#6B4F3A] bg-[#EFE8DD] border border-[#DED3C5] px-1.5 py-0.5 rounded font-bold">
               #07
@@ -59,7 +59,7 @@ export function Footer() {
 
         {/* Copyright & Back to Top */}
         <div className="flex items-center gap-4 text-xs text-[#8C7D70] font-mono">
-          <span>&copy; 2026 Vivian D&apos;costa</span>
+          <span>&copy; 2026 Vivian Dcosta</span>
           <button
             onClick={scrollToTop}
             aria-label="Back to top"

@@ -44,7 +44,7 @@ export function Navbar({ onOpenResume }: NavbarProps) {
         >
           <span className="w-2.5 h-2.5 rounded-full bg-[#B89452] ring-4 ring-[#B89452]/20 group-hover:scale-125 transition-transform duration-200"></span>
           <span className="font-display font-black text-lg sm:text-xl tracking-tight uppercase">
-            Vivian D&apos;costa
+            Vivian Dcosta
           </span>
           <span className="text-[10px] font-mono text-[#6B4F3A] bg-[#EFE8DD] border border-[#DED3C5] px-1.5 py-0.5 rounded font-bold tracking-wider">
             #07

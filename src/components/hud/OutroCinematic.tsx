@@ -86,7 +86,7 @@ export function OutroCinematic() {
             className="mt-8 flex flex-col items-center gap-1"
           >
             <div className="text-xl sm:text-2xl font-black font-sans uppercase text-white">
-              VIVIAN D&apos;COSTA
+              VIVIAN DCOSTA
             </div>
             <div className="text-xs sm:text-sm font-mono text-[#D4AF37] tracking-widest uppercase">
               SOFTWARE DEVELOPER • FULL-STACK & AI/ML

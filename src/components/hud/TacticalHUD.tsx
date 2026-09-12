@@ -77,7 +77,7 @@ export function TacticalHUD() {
             </div>
             <div className="text-left">
               <div className="text-xs sm:text-sm font-black text-white tracking-wider uppercase group-hover:text-[#D4AF37] transition-colors font-sans">
-                VIVIAN D&apos;COSTA
+                VIVIAN DCOSTA
               </div>
               <div className="text-[10px] font-mono text-[#D4AF37] font-semibold">
                 SOFTWARE DEVELOPER

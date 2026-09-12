@@ -25,7 +25,7 @@ export function Jumbotron3D() {
     // Gold top header
     ctx.fillStyle = isMatchDay ? '#F5C542' : '#D4AF37';
     ctx.font = 'bold 28px monospace';
-    ctx.fillText('👑 VIVIAN D\'COSTA • MADRID NIGHT DEVELOPER ARENA 👑', 100, 50);
+    ctx.fillText('👑 VIVIAN DCOSTA • MADRID NIGHT DEVELOPER ARENA 👑', 100, 50);
 
     // Score Board
     ctx.fillStyle = '#0D0D0D';
@@ -37,7 +37,7 @@ export function Jumbotron3D() {
     // Home Team: VIVIAN
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 44px sans-serif';
-    ctx.fillText('VIVIAN D\'COSTA', 80, 155);
+    ctx.fillText('VIVIAN DCOSTA', 80, 155);
     ctx.fillStyle = '#D4AF37';
     ctx.font = 'bold 22px monospace';
     ctx.fillText('SOFTWARE DEVELOPER', 80, 195);

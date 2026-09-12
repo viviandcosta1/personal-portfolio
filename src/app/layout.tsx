@@ -15,12 +15,11 @@ const manrope = Manrope({
 });
 
 export const metadata: Metadata = {
-  title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
+  title: "Vivian Dcosta — Software Developer · AI/ML · Full Stack",
   description:
-    "Personal portfolio of Vivian D'costa. Software developer building web applications, AI-powered systems, and automation experiences with discipline and precision.",
+    "Personal portfolio of Vivian Dcosta. Software developer building web applications, AI-powered systems, and automation experiences with discipline and precision.",
   keywords: [
     'Vivian Dcosta',
-    'Vivian D\'costa',
     'Software Developer',
     'AI/ML Developer',
     'Full Stack Developer',
@@ -33,24 +32,24 @@ export const metadata: Metadata = {
     'AWS',
     'Portfolio',
   ],
-  authors: [{ name: "Vivian D'costa", url: 'https://viviandcosta.dev' }],
-  creator: "Vivian D'costa",
+  authors: [{ name: "Vivian Dcosta", url: 'https://viviandcosta.dev' }],
+  creator: "Vivian Dcosta",
   metadataBase: new URL('https://viviandcosta.dev'),
   alternates: {
     canonical: '/',
   },
   openGraph: {
-    title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
+    title: "Vivian Dcosta — Software Developer · AI/ML · Full Stack",
     description:
-      "Explore the work of Vivian D'costa — software engineer crafting high-performance web systems, AI pipelines, and full-stack solutions.",
+      "Explore the work of Vivian Dcosta — software engineer crafting high-performance web systems, AI pipelines, and full-stack solutions.",
     url: 'https://viviandcosta.dev',
-    siteName: "Vivian D'costa Portfolio",
+    siteName: "Vivian Dcosta Portfolio",
     locale: 'en_US',
     type: 'website',
   },
   twitter: {
     card: 'summary_large_image',
-    title: "Vivian D'costa — Software Developer · AI/ML · Full Stack",
+    title: "Vivian Dcosta — Software Developer · AI/ML · Full Stack",
     description:
       "Software developer building web applications, AI-powered systems, and scalable full-stack products.",
   },
@@ -74,7 +73,7 @@ export default function RootLayout({
   const jsonLd = {
     '@context': 'https://schema.org',
     '@type': 'Person',
-    name: "Vivian D'costa",
+    name: "Vivian Dcosta",
     jobTitle: 'Software Developer & AI/ML Engineer',
     url: 'https://viviandcosta.dev',
     sameAs: [

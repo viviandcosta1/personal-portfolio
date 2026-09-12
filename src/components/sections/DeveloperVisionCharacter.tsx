@@ -129,7 +129,7 @@ export function DeveloperVisionCharacter() {
         <div className="relative w-full h-full rounded-[28px] overflow-hidden bg-[#EFE8DD]">
           <Image
             src="/images/vivian_developer_vision.jpg"
-            alt="Vivian D'costa — Stylish Software Developer wearing Vision Glasses"
+            alt="Vivian Dcosta — Stylish Software Developer wearing Vision Glasses"
             fill
             priority
             sizes="(max-width: 768px) 300px, 350px"
@@ -154,7 +154,7 @@ export function DeveloperVisionCharacter() {
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-emerald-600 animate-pulse"></span>
               <span className="text-[10px] font-mono font-bold tracking-wider text-[#38291F] uppercase">
-                VIVIAN D&apos;COSTA
+                VIVIAN DCOSTA
               </span>
             </div>
             <span className="text-[9px] font-mono text-[#B89452] font-semibold bg-[#F7F3EC] px-1.5 py-0.5 rounded border border-[#DED3C5]">

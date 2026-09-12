@@ -40,7 +40,7 @@ export function StadiumRoofAndSky() {
 
     ctx.fillStyle = '#FFFFFF';
     ctx.font = 'bold 36px monospace';
-    ctx.fillText('⚽ VIVIAN D\'COSTA ARENA ⚽ FULL STACK & AI/ML ⚽ EUROPEAN CHAMPIONSHIP ATMOSPHERE ⚽', 40, 145);
+    ctx.fillText('⚽ VIVIAN DCOSTA ARENA ⚽ FULL STACK & AI/ML ⚽ EUROPEAN CHAMPIONSHIP ATMOSPHERE ⚽', 40, 145);
 
     const texture = new THREE.CanvasTexture(canvas);
     texture.wrapS = THREE.RepeatWrapping;

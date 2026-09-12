@@ -42,7 +42,7 @@ export function LoadingScreen() {
           <div className="flex items-center gap-3">
             <span className="w-2.5 h-2.5 rounded-full bg-[#D4AF37] animate-ping" />
             <span className="font-mono text-xs tracking-widest text-[#D4AF37] uppercase font-bold">
-              BOOTING VIVIAN D&apos;COSTA PORTFOLIO OS v3.0
+              BOOTING VIVIAN DCOSTA PORTFOLIO OS v3.0
             </span>
           </div>
           <div className="font-mono text-xs text-slate-400">

@@ -34,7 +34,7 @@ export function HeroSection({ onOpenResume }: HeroSectionProps) {
           <div className="mb-6">
             <h1 className="font-display font-black text-5xl sm:text-6xl md:text-7xl xl:text-8xl text-[#2B211B] leading-[0.92] tracking-tight uppercase">
               VIVIAN<br />
-              D&apos;COSTA
+              DCOSTA
             </h1>
             <p className="font-display italic text-2xl sm:text-3xl md:text-4xl text-[#B89452] mt-2 font-light">
               Software Developer
@@ -81,7 +81,7 @@ export function HeroSection({ onOpenResume }: HeroSectionProps) {
                 />
                 <text className="text-[7.5px] font-mono uppercase tracking-[0.24em] fill-current font-bold">
                   <textPath href="#circlePath">
-                    VIVIAN D&apos;COSTA · DEVELOPER · AI/ML ·
+                    VIVIAN DCOSTA · DEVELOPER · AI/ML ·
                   </textPath>
                 </text>
               </svg>

@@ -13,7 +13,7 @@ export function HeroOverlay() {
   // 0: Complete Black & Heartbeat
   // 1: First light + Football rolling
   // 2: Phased Text 1 ("EVERY CAREER STARTS WITH A FIRST TOUCH.")
-  // 3: Phased Text 2 ("VIVIAN D'COSTA" / SOFTWARE DEVELOPER)
+  // 3: Phased Text 2 ("VIVIAN DCOSTA" / SOFTWARE DEVELOPER)
   // 4: Phased Text 3 ("BUILD. PLAY. IMPROVE.") + Stadium Lights Flare & CTA
   const [cinematicPhase, setCinematicPhase] = useState(0);
 
@@ -134,7 +134,7 @@ export function HeroOverlay() {
               <h1 className="text-5xl sm:text-7xl md:text-8xl lg:text-9xl font-black tracking-tighter uppercase leading-none font-sans">
                 <span className="text-white">VIVIAN </span>
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-white via-[#D4AF37] to-[#F5C542]">
-                  D&apos;COSTA
+                  DCOSTA
                 </span>
               </h1>
 

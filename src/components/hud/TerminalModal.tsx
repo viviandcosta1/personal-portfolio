@@ -28,7 +28,7 @@ export function TerminalModal() {
   const [history, setHistory] = useState<TerminalLine[]>([
     { type: 'system', text: '╔══════════════════════════════════════════════════════════════╗' },
     { type: 'system', text: '║  MADRID NIGHT DEVELOPER ARENA • TERMINAL OS v3.0             ║' },
-    { type: 'system', text: '║  Vivian D\'costa • Full-Stack & AI/ML Developer Terminal      ║' },
+    { type: 'system', text: '║  Vivian Dcosta • Full-Stack & AI/ML Developer Terminal       ║' },
     { type: 'system', text: '╚══════════════════════════════════════════════════════════════╝' },
     { type: 'output', text: 'Type "help" for a list of tactical console commands.' },
     { type: 'output', text: 'Type "mentality" or "7" to trigger Mentality Mode.' },
@@ -64,7 +64,7 @@ export function TerminalModal() {
     if (lower === 'help') {
       newHistory.push(
         { type: 'output', text: 'AVAILABLE COMMANDS:' },
-        { type: 'output', text: '  about                  - Vivian D\'costa player profile & scouting card' },
+        { type: 'output', text: '  about                  - Vivian Dcosta player profile & scouting card' },
         { type: 'output', text: '  projects               - Production software & AI platforms' },
         { type: 'output', text: '  lockers / skills       - 10 Tech Stack Lockers (#07 to #16)' },
         { type: 'output', text: '  formation              - Tactical 4-2-3-1 technology formation' },
